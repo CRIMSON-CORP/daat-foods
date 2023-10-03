@@ -13,6 +13,10 @@ const config: Config = {
                     500: 'hsl(82.26deg 52.1% 46.67%)',
                 },
             },
+            fontFamily: {
+                header: ['var(--font-roboto)', 'sans-serif'],
+                body: ['var(--font-roboto)', 'sans-serif'],
+            },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                 'gradient-conic':
