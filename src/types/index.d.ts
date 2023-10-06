@@ -12,3 +12,10 @@ interface CartItem extends ProductItem {
     sub_total: number;
     quantity: number;
 }
+
+interface User {
+    full_name: string;
+    phone_number: string;
+    email: string;
+    address: string;
+}

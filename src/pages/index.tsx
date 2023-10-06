@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
+import CartView from '@/components/CartView';
+import HeaderCart from '@/components/HeaderCart';
 import ProductItem from '@/components/ProductItem';
 import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
@@ -63,6 +65,11 @@ function Header() {
         open: openScrollState,
         close: closeScrollState,
     } = useToggle();
+    const {
+        state: cartView,
+        open: openCartView,
+        close: closeCartView,
+    } = useToggle();
 
     useEffect(() => {
         const handleScrollSateChange = () => {
@@ -105,14 +112,7 @@ function Header() {
                     </ul>
                 </nav>
                 <div className="flex items-center gap-4">
-                    <button className="w-12 h-12 rounded-full flex justify-center border border-white/10 items-center bg-white/25 backdrop-blur-lg">
-                        <Image
-                            width={24}
-                            height={24}
-                            src="/cart.svg"
-                            alt="your cart"
-                        />
-                    </button>
+                    <HeaderCart openCartView={openCartView} />
                     <button
                         onClick={toggleMenu}
                         className="md:hidden rounded-full"
@@ -126,6 +126,7 @@ function Header() {
                     </button>
                 </div>
             </div>
+            {cartView && <CartView closeCartView={closeCartView} />}
         </header>
     );
 }

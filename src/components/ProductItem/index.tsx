@@ -5,22 +5,7 @@ import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ProductItem: FC<ProductItem> = (props) => {
-    const dispatch = useDispatch();
-
-    const cartItems = useSelector((state: RootState) => state.cart);
-
     const { image, name, price, quantity_in_stock, id } = props;
-
-    const itemInCart = cartItems.find((cartItem) => cartItem.id === id);
-    const existInCart = itemInCart !== undefined;
-
-    const addProductToCart = () => {
-        dispatch(addToCart(props));
-    };
-
-    const removeProductFromCart = () => {
-        dispatch(removeFromCart(itemInCart?.cart_item_id));
-    };
 
     return (
         <article className="max-w-xs flex flex-col gap-4 rounded-xl overflow-hidden bg-white shadow-sm">
@@ -34,11 +19,7 @@ const ProductItem: FC<ProductItem> = (props) => {
                         className="w-full h-full object-cover object-center"
                     />
                 </div>
-                <AddToCartButton
-                    existInCart={existInCart}
-                    addProductToCart={addProductToCart}
-                    removeProductFromCart={removeProductFromCart}
-                />
+                <AddToCartButton productId={id} props={props} />
             </div>
             <div className="flex flex-col gap-8 p-8">
                 <h4 className="font-bold text-xl text-slate-800">{name}</h4>
@@ -58,16 +39,25 @@ const ProductItem: FC<ProductItem> = (props) => {
 export default ProductItem;
 
 interface AddToCartButtonProps {
-    existInCart: boolean;
-    addProductToCart: () => void;
-    removeProductFromCart: () => void;
+    productId: string;
+    props: ProductItem;
 }
 
-function AddToCartButton({
-    existInCart,
-    addProductToCart,
-    removeProductFromCart,
-}: AddToCartButtonProps) {
+function AddToCartButton({ productId, props }: AddToCartButtonProps) {
+    const dispatch = useDispatch();
+    const cartItem = useSelector((state: RootState) =>
+        state.cart.find((cartItem) => cartItem.id === productId),
+    );
+
+    const existInCart = cartItem !== undefined;
+
+    const addProductToCart = () => {
+        dispatch(addToCart(props));
+    };
+
+    const removeProductFromCart = () => {
+        dispatch(removeFromCart(cartItem?.cart_item_id));
+    };
     if (existInCart) {
         return (
             <button
