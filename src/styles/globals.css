@@ -26,6 +26,12 @@
     }
 }
 
+@layer components {
+    .clickable {
+        @apply hover:scale-105 active:scale-100 transition-transform ease-out duration-200;
+    }
+}
+
 @layer utilities {
     .hero-background {
         clip-path: ellipse(70% 70% at 50% 30%);

@@ -69,10 +69,10 @@ function Header() {
                         <Link href="/" className="px-3 py-2">
                             Home
                         </Link>
-                        <Link href="/shop" className="px-3 py-2">
+                        <Link href="#shop" className="px-3 py-2">
                             Shop
                         </Link>
-                        <Link href="/contact" className="px-3 py-2">
+                        <Link href="#contact" className="px-3 py-2">
                             Contact
                         </Link>
                     </ul>
@@ -177,7 +177,7 @@ function Shop() {
 
 function Contact() {
     return (
-        <section id="contact" className="relative">
+        <section id="contact" className="relative min-h-screen grid">
             <Image
                 height={700}
                 width={962.5}
@@ -185,8 +185,8 @@ function Contact() {
                 src="/hero-image.jpg"
                 className="w-full h-full inset-0 -z-10 absolute brightness-[0.4] object-cover object-center"
             />
-            <div className="container flex flex-wrap text-white gap-16">
-                <div className="grow w-full flex flex-col gap-16 py-16">
+            <div className="container h-full grid grid-cols-1 md:grid-cols-2 text-white gap-16 items-stretch">
+                <div className="grow w-full flex flex-col justify-center gap-16 py-16">
                     <header className="flex flex-col gap-5">
                         <h2 className="text-5xl font-bold">
                             You can reach us from anywhere!
@@ -287,7 +287,7 @@ function Contact() {
                         </div>
                         <button
                             type="submit"
-                            className="w-full inline-block px-10 py-5 md:py-8 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
+                            className="clickable w-full inline-block px-10 py-4 md:py-6 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
                         >
                             Send Message
                         </button>
