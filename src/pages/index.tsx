@@ -167,17 +167,9 @@ function Shop({ products }: { products: ProductItem[] }) {
                 </h2>
             </header>
             <div className="container grid grid-cols-[repeat(auto-fit,minmax(320px,320px))] gap-7 justify-center">
-                {products.map(
-                    ({ id, price, name, quantity_in_stock, image }) => (
-                        <ProductItem
-                            key={id}
-                            name={name}
-                            price={price}
-                            image={image}
-                            amountInStock={quantity_in_stock}
-                        />
-                    ),
-                )}
+                {products.map((product) => (
+                    <ProductItem key={product.id} {...product} />
+                ))}
             </div>
         </section>
     );

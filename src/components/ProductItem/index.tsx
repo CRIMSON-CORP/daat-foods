@@ -1,19 +1,27 @@
+import { addToCart, removeFromCart } from '@/redux/cartReducer/actions';
+import { RootState } from '@/redux/store';
 import Image from 'next/image';
 import { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface ProductItemProps {
-    image: string;
-    name: string;
-    price: number;
-    amountInStock: number;
-}
+const ProductItem: FC<ProductItem> = (props) => {
+    const dispatch = useDispatch();
 
-const ProductItem: FC<ProductItemProps> = ({
-    image,
-    name,
-    price,
-    amountInStock,
-}) => {
+    const cartItems = useSelector((state: RootState) => state.cart);
+
+    const { image, name, price, quantity_in_stock, id } = props;
+
+    const itemInCart = cartItems.find((cartItem) => cartItem.id === id);
+    const existInCart = itemInCart !== undefined;
+
+    const addProductToCart = () => {
+        dispatch(addToCart(props));
+    };
+
+    const removeProductFromCart = () => {
+        dispatch(removeFromCart(itemInCart?.cart_item_id));
+    };
+
     return (
         <article className="max-w-xs flex flex-col gap-4 rounded-xl overflow-hidden bg-white shadow-sm">
             <div className="relative">
@@ -26,21 +34,17 @@ const ProductItem: FC<ProductItemProps> = ({
                         className="w-full h-full object-cover object-center"
                     />
                 </div>
-                <button className="w-16 h-16 p-1 rounded-full flex justify-center items-center bg-white absolute bottom-0 right-8 translate-y-1/2 shadow-xl">
-                    <Image
-                        width={32}
-                        height={32}
-                        src="/cart.svg"
-                        alt="your cart"
-                        className="invert-[0.2]"
-                    />
-                </button>
+                <AddToCartButton
+                    existInCart={existInCart}
+                    addProductToCart={addProductToCart}
+                    removeProductFromCart={removeProductFromCart}
+                />
             </div>
             <div className="flex flex-col gap-8 p-8">
                 <h4 className="font-bold text-xl text-slate-800">{name}</h4>
                 <div className="flex items-center justify-between gap-5 flex-wrap">
                     <p className="text-slate-500 font-medium">
-                        {amountInStock} remaining
+                        {quantity_in_stock} remaining
                     </p>
                     <p className="text-slate-500 font-medium">
                         ₦{price.toLocaleString()}
@@ -52,3 +56,46 @@ const ProductItem: FC<ProductItemProps> = ({
 };
 
 export default ProductItem;
+
+interface AddToCartButtonProps {
+    existInCart: boolean;
+    addProductToCart: () => void;
+    removeProductFromCart: () => void;
+}
+
+function AddToCartButton({
+    existInCart,
+    addProductToCart,
+    removeProductFromCart,
+}: AddToCartButtonProps) {
+    if (existInCart) {
+        return (
+            <button
+                onClick={removeProductFromCart}
+                className="w-16 h-16 p-1 rounded-full flex justify-center items-center bg-red-500 absolute bottom-0 right-8 translate-y-1/2 shadow-xl"
+            >
+                <Image
+                    width={32}
+                    height={32}
+                    src="/delete-cart.svg"
+                    alt="your cart"
+                    className=""
+                />
+            </button>
+        );
+    }
+    return (
+        <button
+            onClick={addProductToCart}
+            className="w-16 h-16 p-1 rounded-full flex justify-center items-center bg-white absolute bottom-0 right-8 translate-y-1/2 shadow-xl"
+        >
+            <Image
+                width={32}
+                height={32}
+                src="/cart.svg"
+                alt="your cart"
+                className="invert-[0.5]"
+            />
+        </button>
+    );
+}
