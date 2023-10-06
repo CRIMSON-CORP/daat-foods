@@ -1,10 +1,14 @@
+import { collection, getDocs } from 'firebase/firestore';
+import { GetStaticProps } from 'next';
 import { Raleway } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
 import ProductItem from '@/components/ProductItem';
+import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
+import { firestore } from '@/service/firebase';
 
 const raleway = Raleway({
     subsets: ['latin'],
@@ -12,7 +16,7 @@ const raleway = Raleway({
     variable: '--raleway',
 });
 
-export default function Home() {
+export default function Home({ products }: { products: ProductItem[] }) {
     return (
         <main className={raleway.variable}>
             <div className="bg-gray-200/50">
@@ -20,12 +24,37 @@ export default function Home() {
                     <Header />
                     <Hero />
                 </div>
-                <Shop />
+                <Shop products={products} />
                 <Contact />
             </div>
         </main>
     );
 }
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+    const productCollection = collection(firestore, 'products');
+    const productsQuerySnapshot = await getDocs(productCollection);
+    const products: ProductItem[] = [];
+
+    productsQuerySnapshot.forEach((doc) => {
+        const { name, created_at, image, price, quantity_in_stock } =
+            doc.data();
+
+        products.push({
+            id: doc.id,
+            name,
+            created_at: created_at.toDate().getTime().toString(),
+            image,
+            price,
+            quantity_in_stock,
+        });
+    });
+
+    return {
+        props: { products },
+        revalidate: revalidateTimeout,
+    };
+};
 
 function Header() {
     const { state: toggleMenuState, toggle: toggleMenu } = useToggle();
@@ -37,8 +66,6 @@ function Header() {
 
     useEffect(() => {
         const handleScrollSateChange = () => {
-            console.log(window.scrollY);
-
             if (window.scrollY >= 200) openScrollState();
             else closeScrollState();
         };
@@ -131,7 +158,7 @@ function Hero() {
     );
 }
 
-function Shop() {
+function Shop({ products }: { products: ProductItem[] }) {
     return (
         <section id="shop" className="flex flex-col gap-16 py-16">
             <header className="flex justify-center">
@@ -139,37 +166,18 @@ function Shop() {
                     shop
                 </h2>
             </header>
-            <div className="container grid grid-cols-[repeat(auto-fit,minmax(320px,320px))] gap-7 justify-around">
-                <ProductItem
-                    price={300}
-                    name="Garri Ijebu(Ijebu)"
-                    amountInStock={34}
-                    image="/hero-image.jpg"
-                />
-                <ProductItem
-                    price={300}
-                    name="Somehting"
-                    amountInStock={34}
-                    image="/hero-image.jpg"
-                />
-                <ProductItem
-                    price={300}
-                    name="Somehting"
-                    amountInStock={34}
-                    image="/hero-image.jpg"
-                />
-                <ProductItem
-                    price={300}
-                    name="Somehting"
-                    amountInStock={34}
-                    image="/hero-image.jpg"
-                />
-                <ProductItem
-                    price={300}
-                    name="Somehting"
-                    amountInStock={34}
-                    image="/hero-image.jpg"
-                />
+            <div className="container grid grid-cols-[repeat(auto-fit,minmax(320px,320px))] gap-7 justify-center">
+                {products.map(
+                    ({ id, price, name, quantity_in_stock, image }) => (
+                        <ProductItem
+                            key={id}
+                            name={name}
+                            price={price}
+                            image={image}
+                            amountInStock={quantity_in_stock}
+                        />
+                    ),
+                )}
             </div>
         </section>
     );
