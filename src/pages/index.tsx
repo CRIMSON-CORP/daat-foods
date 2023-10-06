@@ -1,8 +1,10 @@
+import { Raleway } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 import ProductItem from '@/components/ProductItem';
-import { Raleway } from 'next/font/google';
+import useToggle from '@/hooks/useToggle';
 
 const raleway = Raleway({
     subsets: ['latin'],
@@ -26,12 +28,44 @@ export default function Home() {
 }
 
 function Header() {
+    const { state: toggleMenuState, toggle: toggleMenu } = useToggle();
+    const {
+        state: scrollState,
+        open: openScrollState,
+        close: closeScrollState,
+    } = useToggle();
+
+    useEffect(() => {
+        const handleScrollSateChange = () => {
+            console.log(window.scrollY);
+
+            if (window.scrollY >= 200) openScrollState();
+            else closeScrollState();
+        };
+
+        window.addEventListener('scroll', handleScrollSateChange);
+
+        return () => {
+            window.removeEventListener('scroll', handleScrollSateChange);
+        };
+    }, [closeScrollState, openScrollState]);
+
     return (
-        <header className="py-6 absolute top-0 w-full left-0 z-10 text-white border-b border-white/10">
-            <div className="container flex items-center justify-between gap-5">
+        <header
+            className={`py-6 top-0 w-full left-0 z-10 text-white border-b border-white/10 ${
+                scrollState ? 'bg-black/30 fixed backdrop-blur-xl' : 'absolute'
+            }`}
+        >
+            <div className="container relative flex items-center justify-between gap-5">
                 <div className="">LOGO</div>
-                <nav>
-                    <ul className="uppercase tracking-wide flex gap-3 items-center">
+                <nav className="absolute md:relative top-full right-5">
+                    <ul
+                        className={`uppercase tracking-wide flex flex-col md:flex-row gap-3 md:items-center p-4 rounded-xl border-2 border-white/10 ${
+                            scrollState ? 'bg-black/30' : 'bg-white/15'
+                        } backdrop-blur-lg translate-y-5 md:translate-y-0 md:!block ${
+                            toggleMenuState ? 'block' : 'hidden'
+                        }`}
+                    >
                         <Link href="/" className="px-3 py-2">
                             Home
                         </Link>
@@ -43,13 +77,24 @@ function Header() {
                         </Link>
                     </ul>
                 </nav>
-                <div>
+                <div className="flex items-center gap-4">
                     <button className="w-12 h-12 rounded-full flex justify-center border border-white/10 items-center bg-white/25 backdrop-blur-lg">
                         <Image
                             width={24}
                             height={24}
                             src="/cart.svg"
                             alt="your cart"
+                        />
+                    </button>
+                    <button
+                        onClick={toggleMenu}
+                        className="md:hidden rounded-full"
+                    >
+                        <Image
+                            width={32}
+                            height={32}
+                            src="/menu.svg"
+                            alt="menu"
                         />
                     </button>
                 </div>
@@ -71,7 +116,7 @@ function Hero() {
             <div className="container overflow-hidden grow rounded relative isolate flex items-center justify-center">
                 <div className="flex flex-col gap-6 items-center text-white max-w-3xl text-center">
                     <h3 className="uppercase text-xs md:text-sm">daat foods</h3>
-                    <h1 className="font-bold text-6xl tracking-wide">
+                    <h1 className="font-bold text-4xl md:text-6xl tracking-wide">
                         Get Quality Food Stuff at your Door Step!
                     </h1>
                 </div>
@@ -140,7 +185,7 @@ function Contact() {
                 src="/hero-image.jpg"
                 className="w-full h-full inset-0 -z-10 absolute brightness-[0.4] object-cover object-center"
             />
-            <div className="container flex text-white gap-16">
+            <div className="container flex flex-wrap text-white gap-16">
                 <div className="grow w-full flex flex-col gap-16 py-16">
                     <header className="flex flex-col gap-5">
                         <h2 className="text-5xl font-bold">
@@ -154,7 +199,7 @@ function Contact() {
                     </header>
                     <ul className="flex flex-col text-lg font-medium gap-12">
                         <li className="flex items-center gap-5">
-                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-sm">
+                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-xl">
                                 <Image
                                     alt="mail"
                                     width={48}
@@ -168,7 +213,7 @@ function Contact() {
                             </a>
                         </li>
                         <li className="flex items-center gap-5">
-                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-sm">
+                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-xl">
                                 <Image
                                     alt="mail"
                                     width={24}
@@ -180,7 +225,7 @@ function Contact() {
                             <a href="tel:0802656456232">0802656456232</a>
                         </li>
                         <li className="flex items-center gap-5">
-                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-sm">
+                            <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-xl">
                                 <Image
                                     alt="mail"
                                     width={384}
@@ -196,7 +241,7 @@ function Contact() {
                     </ul>
                     <footer>
                         <h3 className="text-lg font-semibold">Our Socials</h3>
-                        <div className="flex gap-5 underline text-base text-slate-200 max-w-xs">
+                        <div className="flex flex-wrap gap-5 underline text-base text-slate-200 max-w-xs">
                             <a href="">Twitter</a>
                             <a href="">Facebook</a>
                             <a href="">Instagram</a>
@@ -205,7 +250,7 @@ function Contact() {
                         </div>
                     </footer>
                 </div>
-                <div className="grow w-full flex flex-col justify-center px-10 gap-16 border-l border-r border-white/10 bg-white/10 backdrop-blur-xl text-white py-16">
+                <div className="grow w-full flex flex-col justify-center px-4 md:px-10 gap-16 border-l border-r border-white/10 bg-white/10 backdrop-blur-xl text-white py-16">
                     <h2 className="text-2xl font-bold">Contact Us!</h2>
                     <form className="flex flex-col gap-10">
                         <div className="flex flex-col gap-4">
@@ -242,7 +287,7 @@ function Contact() {
                         </div>
                         <button
                             type="submit"
-                            className="w-full inline-block px-10 py-8 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
+                            className="w-full inline-block px-10 py-5 md:py-8 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
                         >
                             Send Message
                         </button>
