@@ -21,7 +21,13 @@
         @apply scroll-smooth;
     }
 
-    body {
+    main {
         @apply font-body min-h-screen;
+    }
+}
+
+@layer utilities {
+    .hero-background {
+        clip-path: ellipse(70% 70% at 50% 30%);
     }
 }

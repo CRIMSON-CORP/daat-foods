@@ -10,12 +10,19 @@ const config: Config = {
         extend: {
             colors: {
                 primary: {
-                    500: 'hsl(82.26deg 52.1% 46.67%)',
+                    100: 'hsl(82.26deg 52.1% 70.67%)',
+                    800: 'hsl(82.26deg 52.1% 10.67%)',
                 },
             },
             fontFamily: {
-                header: ['var(--font-roboto)', 'sans-serif'],
-                body: ['var(--font-roboto)', 'sans-serif'],
+                header: ['var(--raleway)', 'sans-serif'],
+                body: ['var(--raleway)', 'sans-serif'],
+            },
+            container: {
+                center: true,
+                padding: {
+                    DEFAULT: '20px',
+                },
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

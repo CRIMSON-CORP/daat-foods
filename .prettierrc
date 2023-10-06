@@ -1,4 +1,5 @@
 {
+    "endOfLine": "auto",
     "jsxSingleQuote": false,
     "singleQuote": true,
     "tabWidth": 4
