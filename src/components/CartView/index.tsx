@@ -3,10 +3,11 @@ import {
     changeCartItemQuantity,
     decrementCartItemQuantity,
     incrementCartItemQuantity,
+    removeFromCart,
 } from '@/redux/cartReducer/actions';
 import { RootState } from '@/redux/store';
 import Image from 'next/image';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function CartView({ closeCartView }: { closeCartView: () => void }) {
@@ -22,6 +23,13 @@ function CartView({ closeCartView }: { closeCartView: () => void }) {
             return previousValue + currentValue.sub_total;
         }, 0);
     }, [cart]);
+    useEffect(() => {
+        return () => {
+            console.log('close');
+
+            closeCheckoutModal();
+        };
+    }, [closeCheckoutModal]);
     return (
         <aside className="fixed top-0 left-0 h-screen bg-white text-slate-800 w-full py-16 overflow-auto">
             <button
@@ -116,22 +124,38 @@ const CartItem: FC<CartItem> = ({
         dispatch(changeCartItemQuantity(cart_item_id, e.target.value));
     };
 
+    const removeItemFromCart = () => {
+        dispatch(removeFromCart(cart_item_id));
+    };
+
     return (
         <tr>
             <td>
-                <div className="flex items-center flex-col md:flex-row gap-4">
+                <div className="flex items-start md:items-center flex-col md:flex-row gap-4">
                     <Image
                         src={image}
                         alt={name}
                         width={200}
                         height={200}
-                        className="max-w-[100px] md:max-w-none object-cover object-center"
+                        className="max-w-[150px] md:max-w-none object-cover object-center"
                     />
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-2 lg:gap-5">
                         <p className="text-lg font-semibold text-slate-700">
                             {name}
                         </p>
                         <p>{quantity_in_stock} remaining</p>
+                        <button
+                            onClick={removeItemFromCart}
+                            className="flex items-center gap-1 text-white text-sm rounded-md bg-red-500 p-2"
+                        >
+                            <Image
+                                src="/delete-cart.svg"
+                                alt="delete cart item"
+                                width={16}
+                                height={16}
+                            />
+                            <span>Remove Item</span>
+                        </button>
                     </div>
                 </div>
             </td>
@@ -247,8 +271,19 @@ function CheckoutModal({
         >
             <div
                 onClick={preventOutsideClick}
-                className="w-full bg-white rounded-2xl max-w-3xl p-4 flex flex-col gap-10"
+                className="relative w-full bg-white rounded-2xl max-w-3xl p-4 flex flex-col gap-10"
             >
+                <button
+                    onClick={closeCheckoutModal}
+                    className="absolute top-5 right-5 invert-[0.5]"
+                >
+                    <Image
+                        src="/close.svg"
+                        alt="close cart view"
+                        width={24}
+                        height={24}
+                    />
+                </button>
                 <header className="text-center text-xl font-semibold text-slate-600">
                     Checkout
                 </header>
