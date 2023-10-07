@@ -167,7 +167,7 @@ function Hero() {
 
 function Shop({ products }: { products: ProductItem[] }) {
     return (
-        <section id="shop" className="flex flex-col gap-16 py-16 scroll-pt-10">
+        <section id="shop" className="flex flex-col gap-16 py-16 scroll-mt-28">
             <header className="flex justify-center">
                 <h2 className="uppercase text-center text-slate-700 text-2xl relative before:block before:absolute before:w-3/5 before:h-1 before:bg-slate-700 before:bottom-0 before:left-1/2 before:-translate-x-1/2 pb-10">
                     shop

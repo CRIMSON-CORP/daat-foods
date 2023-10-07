@@ -7,8 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 const ProductItem: FC<ProductItem> = (props) => {
     const { image, name, price, quantity_in_stock, id } = props;
 
+    const outOfStock = quantity_in_stock <= 0;
+
     return (
-        <article className="max-w-xs flex flex-col gap-4 rounded-xl overflow-hidden bg-white shadow-sm">
+        <article
+            className={`max-w-xs flex flex-col gap-4 rounded-xl overflow-hidden bg-white shadow-sm ${
+                outOfStock ? 'opacity-50' : 'opacity-100'
+            }`}
+        >
             <div className="relative">
                 <div className="overflow-hidden aspect-[3/2.5]">
                     <Image
@@ -49,7 +55,11 @@ function AddToCartButton({ productId, props }: AddToCartButtonProps) {
         state.cart.find((cartItem) => cartItem.id === productId),
     );
 
+    const { quantity_in_stock } = props;
+
     const existInCart = cartItem !== undefined;
+
+    const outOfStock = quantity_in_stock <= 0;
 
     const addProductToCart = () => {
         dispatch(addToCart(props));
@@ -58,9 +68,11 @@ function AddToCartButton({ productId, props }: AddToCartButtonProps) {
     const removeProductFromCart = () => {
         dispatch(removeFromCart(cartItem?.cart_item_id));
     };
+
     if (existInCart) {
         return (
             <button
+                disabled={outOfStock}
                 onClick={removeProductFromCart}
                 className="w-16 h-16 p-1 rounded-full flex justify-center items-center bg-red-500 absolute bottom-0 right-8 translate-y-1/2 shadow-xl"
             >
@@ -76,6 +88,7 @@ function AddToCartButton({ productId, props }: AddToCartButtonProps) {
     }
     return (
         <button
+            disabled={outOfStock}
             onClick={addProductToCart}
             className="w-16 h-16 p-1 rounded-full flex justify-center items-center bg-white absolute bottom-0 right-8 translate-y-1/2 shadow-xl"
         >
