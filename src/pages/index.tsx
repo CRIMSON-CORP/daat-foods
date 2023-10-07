@@ -41,12 +41,18 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 };
 
 function Header() {
-    const { state: toggleMenuState, toggle: toggleMenu } = useToggle();
+    const {
+        state: toggleMenuState,
+        toggle: toggleMenu,
+        close: closeMenu,
+    } = useToggle();
+
     const {
         state: scrollState,
         open: openScrollState,
         close: closeScrollState,
     } = useToggle();
+
     const {
         state: cartView,
         open: openCartView,
@@ -64,7 +70,13 @@ function Header() {
         return () => {
             window.removeEventListener('scroll', handleScrollSateChange);
         };
-    }, [closeScrollState, openScrollState]);
+    }, [
+        closeCartView,
+        closeMenu,
+        closeScrollState,
+        openScrollState,
+        toggleMenu,
+    ]);
 
     return (
         <header
@@ -82,13 +94,25 @@ function Header() {
                             toggleMenuState ? 'block' : 'hidden'
                         }`}
                     >
-                        <Link href="/" className="px-3 py-2">
+                        <Link
+                            href="/"
+                            onClick={closeMenu}
+                            className="px-3 py-2"
+                        >
                             Home
                         </Link>
-                        <Link href="#shop" className="px-3 py-2">
+                        <Link
+                            href="#shop"
+                            onClick={closeMenu}
+                            className="px-3 py-2"
+                        >
                             Shop
                         </Link>
-                        <Link href="#contact" className="px-3 py-2">
+                        <Link
+                            href="#contact"
+                            onClick={closeMenu}
+                            className="px-3 py-2"
+                        >
                             Contact
                         </Link>
                     </ul>
@@ -143,7 +167,7 @@ function Hero() {
 
 function Shop({ products }: { products: ProductItem[] }) {
     return (
-        <section id="shop" className="flex flex-col gap-16 py-16">
+        <section id="shop" className="flex flex-col gap-16 py-16 scroll-pt-10">
             <header className="flex justify-center">
                 <h2 className="uppercase text-center text-slate-700 text-2xl relative before:block before:absolute before:w-3/5 before:h-1 before:bg-slate-700 before:bottom-0 before:left-1/2 before:-translate-x-1/2 pb-10">
                     shop
