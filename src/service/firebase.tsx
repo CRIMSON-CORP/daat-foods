@@ -1,6 +1,16 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {
+    addDoc,
+    collection,
+    doc,
+    getDocs,
+    getFirestore,
+    increment,
+    serverTimestamp,
+    setDoc,
+    updateDoc,
+} from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,3 +29,53 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+
+const productCollection = collection(firestore, 'products');
+const transactionCollection = collection(firestore, 'transactions');
+const ordersCollection = collection(firestore, 'orders');
+
+export async function getProducts() {
+    const productsQuerySnapshot = await getDocs(productCollection);
+    const products: ProductItem[] = [];
+
+    productsQuerySnapshot.forEach((doc) => {
+        const { name, created_at, image, price, quantity_in_stock } =
+            doc.data();
+
+        products.push({
+            id: doc.id,
+            name,
+            created_at: created_at.toDate().getTime().toString(),
+            image,
+            price,
+            quantity_in_stock,
+        });
+    });
+
+    return products;
+}
+
+export async function addTransactionRecord(transactionObject: any) {
+    await setDoc(
+        doc(transactionCollection, transactionObject.data.reference),
+        transactionObject,
+    );
+}
+
+export async function createOrder(order: Order) {
+    // decrement store quantity with quantity bought
+    await Promise.all(
+        order.cart.map((cartItem) => {
+            const prodcutDoc = doc(productCollection, cartItem.id);
+            return updateDoc(prodcutDoc, {
+                quantity_in_stock: increment(-cartItem.quantity),
+            });
+        }),
+    );
+
+    const docRef = await addDoc(ordersCollection, {
+        ...order,
+        created_at: serverTimestamp(),
+    });
+    return docRef.id;
+}

@@ -19,3 +19,12 @@ interface User {
     email: string;
     address: string;
 }
+
+interface Order {
+    user: User;
+    cart: CartItem[];
+    status: 'pending' | 'completed' | 'inprogress' | 'failed';
+    created_at: import('firebase/firestore').FieldValue;
+    total: number;
+    transaction_reference: string;
+}

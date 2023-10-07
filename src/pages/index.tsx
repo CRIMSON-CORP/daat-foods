@@ -1,4 +1,3 @@
-import { collection, getDocs } from 'firebase/firestore';
 import { GetStaticProps } from 'next';
 import { Raleway } from 'next/font/google';
 import Image from 'next/image';
@@ -10,7 +9,7 @@ import HeaderCart from '@/components/HeaderCart';
 import ProductItem from '@/components/ProductItem';
 import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
-import { firestore } from '@/service/firebase';
+import { getProducts } from '@/service/firebase';
 
 const raleway = Raleway({
     subsets: ['latin'],
@@ -34,24 +33,7 @@ export default function Home({ products }: { products: ProductItem[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-    const productCollection = collection(firestore, 'products');
-    const productsQuerySnapshot = await getDocs(productCollection);
-    const products: ProductItem[] = [];
-
-    productsQuerySnapshot.forEach((doc) => {
-        const { name, created_at, image, price, quantity_in_stock } =
-            doc.data();
-
-        products.push({
-            id: doc.id,
-            name,
-            created_at: created_at.toDate().getTime().toString(),
-            image,
-            price,
-            quantity_in_stock,
-        });
-    });
-
+    const products = await getProducts();
     return {
         props: { products },
         revalidate: revalidateTimeout,

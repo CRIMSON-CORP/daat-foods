@@ -2,6 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     addToCart,
     changeCartItemQuantity,
+    clearCart,
     decrementCartItemQuantity,
     incrementCartItemQuantity,
     removeFromCart,
@@ -60,6 +61,9 @@ const cartReducer = createReducer(initialState, (builder) => {
                 return cartItem;
             }
         });
+    });
+    builder.addCase(clearCart, () => {
+        return initialState;
     });
 });
 

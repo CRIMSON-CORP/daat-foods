@@ -60,3 +60,9 @@ export const changeCartItemQuantity = createAction(
         };
     },
 );
+
+export const clearCart = createAction('cart/clear', () => {
+    return {
+        payload: {},
+    };
+});
