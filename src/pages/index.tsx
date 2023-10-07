@@ -1,5 +1,4 @@
 import { GetStaticProps } from 'next';
-import { Raleway } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -11,24 +10,16 @@ import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
 import { getProducts } from '@/service/firebase';
 
-const raleway = Raleway({
-    subsets: ['latin'],
-    weight: ['100', '300', '400', '500', '700', '900'],
-    variable: '--raleway',
-});
-
 export default function Home({ products }: { products: ProductItem[] }) {
     return (
-        <main className={raleway.variable}>
-            <div className="bg-gray-200/50">
-                <div className="flex flex-col min-h-[65vh] mb-10">
-                    <Header />
-                    <Hero />
-                </div>
-                <Shop products={products} />
-                <Contact />
+        <div className="bg-gray-200/50">
+            <div className="flex flex-col min-h-[65vh] mb-10">
+                <Header />
+                <Hero />
             </div>
-        </main>
+            <Shop products={products} />
+            <Contact />
+        </div>
     );
 }
 

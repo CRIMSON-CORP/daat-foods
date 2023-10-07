@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import {
     addDoc,
     collection,
@@ -29,6 +30,7 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+export const auth = getAuth(app);
 
 const productCollection = collection(firestore, 'products');
 const transactionCollection = collection(firestore, 'transactions');
@@ -78,4 +80,13 @@ export async function createOrder(order: Order) {
         created_at: serverTimestamp(),
     });
     return docRef.id;
+}
+
+export async function signInAdmin(email: string, password: string) {
+    try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+        return user;
+    } catch (error) {
+        throw error;
+    }
 }

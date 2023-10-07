@@ -28,3 +28,10 @@ interface Order {
     total: number;
     transaction_reference: string;
 }
+
+interface Admin {
+    id: string;
+    email: string;
+    name: string;
+    image: string;
+}
