@@ -142,6 +142,7 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
 
                 // verify transaction
                 await delay(1000);
+
                 // create order and store in databse
                 setRequestStatus('Creating your Order...');
 
@@ -171,7 +172,9 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
         })();
     }, [config.reference, createOrder, dispatch, setModalView, setOrderId]);
 
-    const onClose = () => {};
+    const onClose = () => {
+        setRequestStatus('');
+    };
 
     const updateField = useCallback(
         (field: keyof User) =>
