@@ -5,6 +5,7 @@ import {
     addDoc,
     collection,
     doc,
+    endAt,
     getCountFromServer,
     getDocs,
     getFirestore,
@@ -14,7 +15,6 @@ import {
     query,
     serverTimestamp,
     setDoc,
-    startAfter,
     startAt,
     updateDoc,
     where,
@@ -126,18 +126,18 @@ export async function getOrders() {
     }
 }
 
-export async function getPaginatedOrders(lastDocument: any) {
+export async function getPaginatedOrders(start_at: number, end_at: number) {
     try {
         const orderTableQuery = query(
             ordersCollection,
             orderBy('created_at', 'asc'),
-            startAt(lastDocument),
+            startAt(start_at),
+            endAt(end_at),
             limit(20),
-            startAfter(lastDocument),
         );
         const ordersQuerySnapshot = await getDocs(orderTableQuery);
 
-        const orders: (Order & { id: string })[] = [];
+        const orders: Order[] = [];
 
         ordersQuerySnapshot.forEach((doc) => {
             orders.push({
@@ -150,6 +150,7 @@ export async function getPaginatedOrders(lastDocument: any) {
                 user: doc.data().user,
             });
         });
+        return orders;
     } catch (error) {
         throw error;
     }

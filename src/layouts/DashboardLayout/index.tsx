@@ -35,11 +35,11 @@ function DashboardLayout({
                         ))}
                     </ul>
                 </nav>
-                <section className="container h-screen min-h-screen flex-grow flex flex-col w-full pb-5 overflow-auto">
+                <section className="container h-screen min-h-screen flex-grow flex flex-col w-full pb-5">
                     <NavBar pageProps={pageProps} />
                     <section
                         id="main"
-                        className="lg:px-8 md:px-6 sm:px-4 px-3 h-full md:pb-0 pb-20 overflow-y-auto scroll-dark overflow-x-hidden bg-primary-100/10 rounded-3xl"
+                        className="lg:px-8 md:px-6 sm:px-4 px-3 h-full md:pb-0 pb-20 max-h-full bg-primary-100/10 rounded-3xl overflow-auto"
                     >
                         {children}
                     </section>

@@ -21,6 +21,7 @@ interface User {
 }
 
 interface Order {
+    id?: string;
     user: User;
     cart: CartItem[];
     status: OrderStatus;
@@ -37,3 +38,5 @@ interface Admin {
 }
 
 type OrderStatus = 'pending' | 'completed' | 'inprogress' | 'failed';
+
+type FetchRequestStatus = 'idle' | 'loading' | 'success' | 'failed';

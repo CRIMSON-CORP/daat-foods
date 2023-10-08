@@ -4,12 +4,12 @@ import { serialize } from 'cookie';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
-    res: NextApiRequest,
-    req: NextApiResponse,
+    req: NextApiRequest,
+    res: NextApiResponse,
 ) {
     try {
         await signOutAdmin();
-        req.setHeader(
+        res.setHeader(
             'Set-Cookie',
             serialize(appCookieName, 'deleted', {
                 maxAge: -1,
@@ -17,8 +17,8 @@ export default async function handler(
                 path: '/',
             }),
         );
-        req.status(200).json({ status: true });
+        res.status(200).json({ status: true });
     } catch (error) {
-        req.status(500).json({ status: false });
+        res.status(500).json({ status: false });
     }
 }
