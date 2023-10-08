@@ -7,6 +7,7 @@ import {
     doc,
     endAt,
     getCountFromServer,
+    getDoc,
     getDocs,
     getFirestore,
     increment,
@@ -156,6 +157,16 @@ export async function getPaginatedOrders(start_at: number, end_at: number) {
     }
 }
 
+export async function updateOrderStatus(orderId: string, status: string) {
+    try {
+        await updateDoc(doc(ordersCollection, orderId), {
+            status,
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function getOrderMetrics() {
     try {
         const pendingOrdersCountQuery = query(
@@ -191,6 +202,21 @@ export async function getOrderMetrics() {
         };
     } catch (error) {}
 }
+
+export async function getSingleOrder(orderId: string) {
+    try {
+        const orderQuerySnapshot = await getDoc(doc(ordersCollection, orderId));
+        const data = orderQuerySnapshot.data();
+        if (data) {
+            data.created_at = data.created_at.toDate().getTime().toString();
+        }
+        return { data, id: orderQuerySnapshot.id };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Auth
 
 export async function signOutAdmin() {
     try {

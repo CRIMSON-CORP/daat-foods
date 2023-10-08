@@ -30,7 +30,7 @@ function DashboardLayout({
                             <DashboardNavItem
                                 key={index}
                                 {...link}
-                                active={pathname === link.url}
+                                active={pathname.includes(link.url)}
                             />
                         ))}
                     </ul>

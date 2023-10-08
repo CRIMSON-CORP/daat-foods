@@ -25,7 +25,7 @@ interface Order {
     user: User;
     cart: CartItem[];
     status: OrderStatus;
-    created_at: import('firebase/firestore').FieldValue;
+    created_at: import('firebase/firestore').FieldValue | string;
     total: number;
     transaction_reference: string;
 }
