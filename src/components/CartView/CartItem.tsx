@@ -51,7 +51,7 @@ export const CartItem: FC<CartItem> = ({
                         alt={name}
                         width={200}
                         height={200}
-                        className="max-w-[150px] md:max-w-none object-cover object-center"
+                        className="max-h-[150px] md:max-w-none object-cover object-center"
                     />
                     <div className="flex flex-col gap-2 lg:gap-5">
                         <p className="text-lg font-semibold text-slate-700">

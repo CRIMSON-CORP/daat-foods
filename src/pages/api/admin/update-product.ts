@@ -6,6 +6,8 @@ export default async function handler(
     res: NextApiResponse,
 ) {
     try {
+        req.body.price = parseFloat(req.body.price);
+        req.body.quantity_in_stock = parseFloat(req.body.quantity_in_stock);
         await updateProduct(req.body as ProductItem);
         res.status(200).json({ success: true });
     } catch (error) {
