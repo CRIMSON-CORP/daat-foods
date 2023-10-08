@@ -30,7 +30,9 @@ function DashboardLayout({
                             <DashboardNavItem
                                 key={index}
                                 {...link}
-                                active={pathname.includes(link.url)}
+                                active={link.urlMatch.includes(
+                                    pathname.split('/')[2],
+                                )}
                             />
                         ))}
                     </ul>
@@ -80,7 +82,7 @@ const DashboardNavItem: React.FC<{
                 )}
             </Link>
             {active && (
-                <span className="absolute top-0 left-0 -z-10 h-full w-2 bg-primary-100" />
+                <span className="absolute top-0 left-0 -z-10 h-full w-1.5 bg-primary-100" />
             )}
         </li>
     );

@@ -4,13 +4,15 @@ export const appUserLocalStorangeName = 'user';
 
 export const adminDashboardNavLinks = [
     {
-        url: '/admin',
+        url: '/admin/',
         iconPath: '/cart.svg',
         label: 'Orders',
+        urlMatch: [undefined, 'order'],
     },
     {
         url: '/admin/products',
         iconPath: '/package.svg',
         label: 'Products',
+        urlMatch: ['products'],
     },
 ];

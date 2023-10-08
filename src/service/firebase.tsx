@@ -167,6 +167,16 @@ export async function updateOrderStatus(orderId: string, status: string) {
     }
 }
 
+export async function restockProduct(productId: string, amount: number) {
+    try {
+        await updateDoc(doc(productCollection, productId), {
+            quantity_in_stock: increment(amount),
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function getOrderMetrics() {
     try {
         const pendingOrdersCountQuery = query(
