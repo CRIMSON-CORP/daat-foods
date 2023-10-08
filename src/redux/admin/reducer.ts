@@ -1,18 +1,32 @@
+import { appUserLocalStorangeName } from '@/config/app-config';
 import { createReducer } from '@reduxjs/toolkit';
-import { addAdminToState } from './actions';
+import { addAdminToState, removeAdminFromState } from './actions';
 
-const initialState: Admin = {
+let initialState: Admin = {
     email: '',
     id: '',
     image: '',
     name: '',
 };
 
-const cartReducer = createReducer(initialState, (builder) => {
+if (typeof window !== 'undefined') {
+    if (localStorage.getItem(appUserLocalStorangeName) !== null) {
+        initialState = JSON.parse(
+            localStorage.getItem(appUserLocalStorangeName) as string,
+        ) as Admin;
+    }
+}
+
+const adminReducer = createReducer(initialState, (builder) => {
     builder.addCase(addAdminToState, (state, action) => {
         state = action.payload;
+        localStorage.setItem('user', JSON.stringify(state));
         return state;
+    });
+    builder.addCase(removeAdminFromState, () => {
+        localStorage.removeItem('user');
+        return initialState;
     });
 });
 
-export default cartReducer;
+export default adminReducer;

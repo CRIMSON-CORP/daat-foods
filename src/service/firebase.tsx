@@ -1,16 +1,23 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import {
     addDoc,
     collection,
     doc,
+    getCountFromServer,
     getDocs,
     getFirestore,
     increment,
+    limit,
+    orderBy,
+    query,
     serverTimestamp,
     setDoc,
+    startAfter,
+    startAt,
     updateDoc,
+    where,
 } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -89,4 +96,109 @@ export async function signInAdmin(email: string, password: string) {
     } catch (error) {
         throw error;
     }
+}
+
+export async function getOrders() {
+    try {
+        const orderTableQuery = query(
+            ordersCollection,
+            orderBy('created_at', 'asc'),
+            limit(20),
+        );
+        const ordersQuerySnapshot = await getDocs(orderTableQuery);
+
+        const orders: (Order & { id: string })[] = [];
+
+        ordersQuerySnapshot.forEach((doc) => {
+            orders.push({
+                id: doc.id,
+                cart: doc.data().cart,
+                created_at: doc.data().created_at.toDate().getTime().toString(),
+                status: doc.data().status,
+                total: doc.data().total,
+                transaction_reference: doc.data().transaction_reference,
+                user: doc.data().user,
+            });
+        });
+        return orders;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getPaginatedOrders(lastDocument: any) {
+    try {
+        const orderTableQuery = query(
+            ordersCollection,
+            orderBy('created_at', 'asc'),
+            startAt(lastDocument),
+            limit(20),
+            startAfter(lastDocument),
+        );
+        const ordersQuerySnapshot = await getDocs(orderTableQuery);
+
+        const orders: (Order & { id: string })[] = [];
+
+        ordersQuerySnapshot.forEach((doc) => {
+            orders.push({
+                id: doc.id,
+                cart: doc.data().cart,
+                created_at: doc.data().created_at.toDate().getTime().toString(),
+                status: doc.data().status,
+                total: doc.data().total,
+                transaction_reference: doc.data().transaction_reference,
+                user: doc.data().user,
+            });
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getOrderMetrics() {
+    try {
+        const pendingOrdersCountQuery = query(
+            ordersCollection,
+            where('status', '==', 'pending'),
+        );
+        const inProgressOrdersCountQuery = query(
+            ordersCollection,
+            where('status', '==', 'inprogress'),
+        );
+        const completedOrdersCountQuery = query(
+            ordersCollection,
+            where('status', '==', 'completed'),
+        );
+        const failedOrdersCountQuery = query(
+            ordersCollection,
+            where('status', '==', 'failed'),
+        );
+        const [pending, inprogress, completed, failed] = await Promise.all(
+            [
+                pendingOrdersCountQuery,
+                inProgressOrdersCountQuery,
+                completedOrdersCountQuery,
+                failedOrdersCountQuery,
+            ].map((query) => getCountFromServer(query)),
+        );
+
+        return {
+            pending: pending.data().count,
+            inprogress: inprogress.data().count,
+            completed: completed.data().count,
+            failed: failed.data().count,
+        };
+    } catch (error) {}
+}
+
+export async function signOutAdmin() {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export function getCurrentUser() {
+    return auth.currentUser;
 }

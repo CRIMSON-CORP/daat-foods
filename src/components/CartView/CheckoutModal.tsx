@@ -194,7 +194,6 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
                 //  bring up paystack popup
                 initializePayment(onSuccess, onClose);
             } catch (error: any) {
-                console.error(error);
                 setRequestStatus(`An error ocurred! - ${error.message}`);
                 await delay(3000);
                 setModalView('failed');

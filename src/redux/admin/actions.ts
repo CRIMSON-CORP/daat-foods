@@ -8,3 +8,12 @@ export const addAdminToState = createAction(
         };
     },
 );
+
+export const removeAdminFromState = createAction(
+    'admin/remove-admin-from-state',
+    () => {
+        return {
+            payload: {},
+        };
+    },
+);

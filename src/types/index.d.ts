@@ -23,7 +23,7 @@ interface User {
 interface Order {
     user: User;
     cart: CartItem[];
-    status: 'pending' | 'completed' | 'inprogress' | 'failed';
+    status: OrderStatus;
     created_at: import('firebase/firestore').FieldValue;
     total: number;
     transaction_reference: string;
@@ -35,3 +35,5 @@ interface Admin {
     name: string;
     image: string;
 }
+
+type OrderStatus = 'pending' | 'completed' | 'inprogress' | 'failed';

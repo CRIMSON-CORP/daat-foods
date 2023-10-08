@@ -5,7 +5,9 @@ import { useDispatch } from 'react-redux';
 
 import axios from '@/lib/axios';
 import { addAdminToState } from '@/redux/admin/actions';
+import { getCurrentUser } from '@/service/firebase';
 import delay from '@/utils/delay';
+import { GetServerSideProps } from 'next';
 
 function Login() {
     return (
@@ -42,6 +44,8 @@ function Form() {
                 email,
                 password,
             });
+            setRequestStatus('Signing Successful...');
+
             const admin: Admin = {
                 email: data.user.email,
                 id: data.user.uid,
@@ -49,9 +53,9 @@ function Form() {
                 name: data.user.displayName,
             };
             dispatch(addAdminToState(admin));
+            await delay(1000);
             push('/admin');
         } catch (error: any) {
-            console.dir(error);
             setRequestStatus(
                 `Signing failed...${
                     error?.response?.data?.message ?? error.message
@@ -111,3 +115,18 @@ function Form() {
         </div>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    if (getCurrentUser() !== null) {
+        return {
+            redirect: {
+                destination: '/admin',
+                statusCode: 301,
+            },
+        };
+    } else {
+        return {
+            props: {},
+        };
+    }
+};
