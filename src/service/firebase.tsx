@@ -20,6 +20,12 @@ import {
     updateDoc,
     where,
 } from 'firebase/firestore';
+import {
+    getDownloadURL,
+    getStorage,
+    ref,
+    uploadString,
+} from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -39,6 +45,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage(app);
 
 const productCollection = collection(firestore, 'products');
 const transactionCollection = collection(firestore, 'transactions');
@@ -49,20 +56,79 @@ export async function getProducts() {
     const products: ProductItem[] = [];
 
     productsQuerySnapshot.forEach((doc) => {
-        const { name, created_at, image, price, quantity_in_stock } =
-            doc.data();
+        const {
+            name,
+            created_at,
+            image,
+            price,
+            quantity_in_stock,
+            updated_at,
+        } = doc.data();
 
         products.push({
             id: doc.id,
             name,
             created_at: created_at.toDate().getTime().toString(),
+            updated_at: updated_at?.toDate().getTime().toString() || null,
             image,
             price,
             quantity_in_stock,
         });
     });
 
+    console.log(products);
+
     return products;
+}
+
+export async function getSingleProduct(productId: string) {
+    try {
+        const productQuerySnapshot = await getDoc(
+            doc(productCollection, productId),
+        );
+        const product = productQuerySnapshot.data();
+        if (product) {
+            product.created_at = product.created_at
+                .toDate()
+                .getTime()
+                .toString();
+            if (product.updated_at) {
+                product.updated_at = product.updated_at
+                    .toDate()
+                    .getTime()
+                    .toString();
+            }
+        }
+        return {
+            product,
+            id: productQuerySnapshot.id,
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function updateProduct(productDetails: ProductItem) {
+    try {
+        await updateDoc(doc(productCollection, productDetails.id), {
+            ...productDetails,
+            updated_at: serverTimestamp(),
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+export async function uploadProduct(
+    productDetails: Omit<ProductItem, 'created_at'>,
+) {
+    try {
+        await addDoc(productCollection, {
+            ...productDetails,
+            created_at: serverTimestamp(),
+        });
+    } catch (error) {
+        throw error;
+    }
 }
 
 export async function addTransactionRecord(transactionObject: any) {
@@ -238,4 +304,16 @@ export async function signOutAdmin() {
 
 export function getCurrentUser() {
     return auth.currentUser;
+}
+
+// Bucket
+export async function uploadImage(base64String: string, filename: string) {
+    const storageRef = ref(storage, `products-images/${filename}`);
+    try {
+        await uploadString(storageRef, base64String, 'data_url');
+        const downloadUrl = await getDownloadURL(storageRef);
+        return downloadUrl;
+    } catch (error) {
+        throw error;
+    }
 }

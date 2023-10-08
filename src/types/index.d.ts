@@ -5,6 +5,7 @@ interface ProductItem {
     price: number;
     quantity_in_stock: number;
     created_at: Date;
+    updated_at?: Date;
 }
 
 interface CartItem extends ProductItem {

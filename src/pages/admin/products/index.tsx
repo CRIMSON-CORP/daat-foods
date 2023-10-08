@@ -25,7 +25,7 @@ function Products({ products }: { products: ProductItem[] }) {
                     <span>Products</span>
                 </h1>
                 <Link
-                    href="new"
+                    href="products/new"
                     className="bg-primary-100 text-primary-800 font-semibold text-sm rounded-md px-4 py-2 flex items-center gap-1 clickable"
                 >
                     <Image width={24} height={24} alt="plus" src="/plus.svg" />{' '}
@@ -89,7 +89,7 @@ const ProductItem: FC<ProductItem> = ({
                 alt={name}
                 width={3000}
                 height={300}
-                className="rounded-lg"
+                className="rounded-lg aspect-square object-cover object-center"
             />
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col">

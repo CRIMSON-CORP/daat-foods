@@ -1,6 +1,5 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import axios from '@/lib/axios';
-import { getSingleProduct } from '@/service/firebase';
 import convertFileTobase64 from '@/utils/convert-file-to-base64';
 import delay from '@/utils/delay';
 import ProtectDashboard from '@/utils/protect-route';
@@ -21,14 +20,14 @@ const acceptedFilesForImage = [
     'image/jpeg',
     'image/webp',
 ];
-function EditProduct({ product, productId }: PageProps) {
+function NewProduct() {
     const [productImageFile, setProductImageFile] = useState<File | null>(null);
     const [productImagePrviewUrl, setproductImagePrviewUrl] = useState('');
 
     const [productFormData, setProductFormData] = useState({
-        name: product.name,
-        price: product.price,
-        quantity_in_stock: product.quantity_in_stock,
+        name: '',
+        price: '',
+        quantity_in_stock: '',
     });
 
     const [requestStatus, setRequestStatus] =
@@ -59,32 +58,25 @@ function EditProduct({ product, productId }: PageProps) {
 
     const onSubmit: React.FormEventHandler = async (e) => {
         e.preventDefault();
-        let productImage = product.image;
-
+        if (!productImageFile)
+            return alert('Please add a picture of the product');
         try {
             setRequestStatus('loading');
-            if (productImageFile) {
-                setRequestFeedback('Uploading image...');
-                const imageBase64String =
-                    await convertFileTobase64(productImageFile);
-                const { data } = await axios.post(
-                    '/admin/upload-product-image',
-                    {
-                        imageBase64: imageBase64String,
-                        filename: encodeURI(productImageFile.name),
-                    },
-                );
-                productImage = data.downloadUrl;
-                setRequestFeedback('Image Uploaded!');
-            }
-            await delay(500);
-            setRequestFeedback('Updating Product...');
-            await axios.post('/admin/update-product', {
-                ...productFormData,
-                image: productImage,
-                id: productId,
+            setRequestFeedback('Uploading image...');
+            const imageBase64String =
+                await convertFileTobase64(productImageFile);
+            const { data } = await axios.post('/admin/upload-product-image', {
+                imageBase64: imageBase64String,
+                filename: encodeURI(productImageFile.name),
             });
-            setRequestFeedback('Product Updated!');
+            setRequestFeedback('Image Uploaded!');
+            await delay(500);
+            setRequestFeedback('Uploading Product...');
+            await axios.post('/admin/upload-product', {
+                ...productFormData,
+                image: data.downloadUrl,
+            });
+            setRequestFeedback('Product Uploaded!');
             await delay(500);
             back();
         } catch (error: any) {
@@ -96,7 +88,7 @@ function EditProduct({ product, productId }: PageProps) {
         <div className="py-10 text-slate-600 flex flex-col gap-10">
             <header className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-slate-600">
-                    <span className="opacity-70">Product</span> / {productId}
+                    <span className="">New Product</span>
                 </h1>
             </header>
             <form
@@ -104,13 +96,28 @@ function EditProduct({ product, productId }: PageProps) {
                 className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
             >
                 <label htmlFor="product-image" className="grow w-full relative">
-                    <Image
-                        width={500}
-                        height={500}
-                        alt={product.name}
-                        className="aspect-square w-full object-cover object-center"
-                        src={productImagePrviewUrl || product.image}
-                    />
+                    {productImagePrviewUrl ? (
+                        <Image
+                            width={500}
+                            height={500}
+                            alt="product preview"
+                            src={productImagePrviewUrl}
+                            className="aspect-square w-full object-cover object-center"
+                        />
+                    ) : (
+                        <div className="rounded-2xl border-dotted border-4 border-gray-200 h-fullw-full aspect-square flex flex-col justify-center items-center gap-5 p-6">
+                            <Image
+                                width={100}
+                                height={100}
+                                src="/plus.svg"
+                                alt="product preview"
+                                className="invert-[0.8]"
+                            />
+                            <p className="text-gray-500 text-xl text-center">
+                                Add Product picture
+                            </p>
+                        </div>
+                    )}
                     <input
                         type="file"
                         id="product-image"
@@ -175,7 +182,7 @@ function EditProduct({ product, productId }: PageProps) {
                                     <span className="w-5 h-5 border-[length:3px] border-t-white rounded-full border-black/30 animate-spin duration-300" />
                                 </span>
                             ) : (
-                                <span>Update Product</span>
+                                <span>Upload Product</span>
                             )}
                         </button>
                     </div>
@@ -185,30 +192,16 @@ function EditProduct({ product, productId }: PageProps) {
     );
 }
 
-export default EditProduct;
+export default NewProduct;
 
-EditProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
+NewProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
     <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
     async (ctx: GetServerSidePropsContext, currentUser: User) => {
-        const { productId } = ctx.query;
-
-        if (typeof productId !== 'string') {
-            return {
-                redirect: {
-                    destination: '/admin',
-                    statusCode: 301,
-                },
-            };
-        }
-
-        const { product, id } = await getSingleProduct(productId as string);
         return {
             props: {
-                product,
-                productId: id,
                 current_user: {
                     name: currentUser.displayName,
                     email: currentUser.email,
