@@ -141,6 +141,8 @@ function RestockModal() {
     const { openRestockModal, productIdForRestock } = useSelector(
         (state: RootState) => state.ui,
     );
+    const [requestStatus, setRequestStatus] =
+        useState<FetchRequestStatus>('idle');
     const { replace, asPath } = useRouter();
 
     const closeModal = () => {
@@ -154,6 +156,7 @@ function RestockModal() {
     const onSubmit: React.FormEventHandler = async (e) => {
         e.preventDefault();
         try {
+            setRequestStatus('loading');
             await axios.post('/admin/restock', {
                 amount: parseInt(restockAmount),
                 productId: productIdForRestock,
@@ -162,6 +165,8 @@ function RestockModal() {
             replace(asPath);
         } catch (error: any) {
             alert(error.message);
+        } finally {
+            setRequestStatus('idle');
         }
     };
 
@@ -215,9 +220,15 @@ function RestockModal() {
                         </div>
                         <button
                             type="submit"
-                            className="bg-primary-100 text-primary-800 font-semibold text-lg rounded-md px-7 py-4 clickable"
+                            className="relative bg-primary-100 text-primary-800 font-semibold text-lg rounded-md px-7 py-4 clickable"
                         >
-                            Restock
+                            {requestStatus !== 'idle' ? (
+                                <span className="inline-flex items-center gap-4">
+                                    <span className="w-5 h-5  flex-none border-[length:3px] border-t-white rounded-full border-black/30 animate-spin duration-300" />
+                                </span>
+                            ) : (
+                                <span>Restock</span>
+                            )}
                         </button>
                     </form>
                 </div>
