@@ -1,6 +1,6 @@
 import { adminDashboardNavLinks } from '@/config/app-config';
 import axios from '@/lib/axios';
-import { removeAdminFromState } from '@/redux/admin/actions';
+import { initializeAdmin, removeAdminFromState } from '@/redux/admin/actions';
 import { RootState } from '@/redux/store';
 import { closeSideBar, openSideBar } from '@/redux/uiReducer/actions';
 import Image from 'next/image';
@@ -120,9 +120,14 @@ const Sidebar = () => {
 };
 
 const NavBar = () => {
+    const dispatch = useDispatch();
     const { email, image, name } = useSelector(
         (state: RootState) => state.admin,
     );
+
+    useEffect(() => {
+        dispatch(initializeAdmin());
+    }, [dispatch]);
 
     return (
         <header className="md:py-4 py-3  w-full z-[5] sticky top-0 left-0 flex justify-between gap-6 text-slate-600">

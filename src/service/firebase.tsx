@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import {
     addDoc,
     collection,
+    deleteDoc,
     doc,
     endAt,
     getCountFromServer,
@@ -124,6 +125,14 @@ export async function uploadProduct(
             ...productDetails,
             created_at: serverTimestamp(),
         });
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteProduct(productId: string) {
+    try {
+        await deleteDoc(doc(productCollection, productId));
     } catch (error) {
         throw error;
     }

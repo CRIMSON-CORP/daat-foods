@@ -13,7 +13,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function Products({ products }: { products: ProductItem[] }) {
@@ -42,7 +42,7 @@ function Products({ products }: { products: ProductItem[] }) {
     );
 }
 
-Products.getLayout = (page: React.ReactElement, pageProps: any) => (
+Products.getLayout = (page: React.ReactElement) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
 
@@ -151,17 +151,25 @@ function RestockModal() {
         e.stopPropagation();
     };
 
-    const onSubmit = async () => {
+    const onSubmit: React.FormEventHandler = async (e) => {
+        e.preventDefault();
         try {
             await axios.post('/admin/restock', {
                 amount: parseInt(restockAmount),
                 productId: productIdForRestock,
             });
+            closeModal();
             replace(asPath);
         } catch (error: any) {
             alert(error.message);
         }
     };
+
+    useEffect(() => {
+        if (!openRestockModal) {
+            setRestockAmount('');
+        }
+    }, [openRestockModal]);
 
     if (openRestockModal) {
         return (
@@ -238,6 +246,7 @@ function DeleteModal() {
             await axios.post('/admin/delete-product', {
                 productId: productIdForDelete,
             });
+            closeModal();
             replace(asPath);
         } catch (error: any) {
             alert(error.message);
