@@ -15,4 +15,10 @@ export const adminDashboardNavLinks = [
         label: 'Products',
         urlMatch: ['products'],
     },
+    {
+        url: '/admin/transactions',
+        iconPath: '/credit-card.svg',
+        label: 'Transaction',
+        urlMatch: ['transactions'],
+    },
 ];

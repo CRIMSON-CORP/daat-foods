@@ -132,10 +132,10 @@ export async function uploadProduct(
 }
 
 export async function addTransactionRecord(transactionObject: any) {
-    await setDoc(
-        doc(transactionCollection, transactionObject.data.reference),
-        transactionObject,
-    );
+    await setDoc(doc(transactionCollection, transactionObject.data.reference), {
+        ...transactionObject,
+        created_at: serverTimestamp(),
+    });
 }
 
 export async function createOrder(order: Order) {
@@ -287,6 +287,68 @@ export async function getSingleOrder(orderId: string) {
             data.created_at = data.created_at.toDate().getTime().toString();
         }
         return { data, id: orderQuerySnapshot.id };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getTransactions() {
+    try {
+        const transactionsTableQuery = query(
+            transactionCollection,
+            orderBy('created_at', 'asc'),
+            limit(20),
+        );
+        const transactionsQuerySnapshot = await getDocs(transactionsTableQuery);
+
+        const list: Transaction[] = [];
+
+        transactionsQuerySnapshot.forEach((snapshot) => {
+            const data = snapshot.data() as Transaction;
+            list.push({
+                ...data,
+                created_at: snapshot
+                    .data()
+                    .created_at.toDate()
+                    .getTime()
+                    .toString(),
+            });
+        });
+
+        return list;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function getPaginatedTransactions(
+    start_at: number,
+    end_at: number,
+) {
+    try {
+        const transactionsTableQuery = query(
+            transactionCollection,
+            orderBy('created_at', 'asc'),
+            startAt(start_at),
+            endAt(end_at),
+            limit(20),
+        );
+        const transactionsQuerySnapshot = await getDocs(transactionsTableQuery);
+
+        const list: Transaction[] = [];
+
+        transactionsQuerySnapshot.forEach((snapshot) => {
+            const data = snapshot.data() as Transaction;
+            list.push({
+                ...data,
+                created_at: snapshot
+                    .data()
+                    .created_at.toDate()
+                    .getTime()
+                    .toString(),
+            });
+        });
+
+        return list;
     } catch (error) {
         throw error;
     }
