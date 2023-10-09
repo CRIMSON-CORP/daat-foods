@@ -139,8 +139,8 @@ const Transactions = ({ transactions }: { transactions: Transaction[] }) => {
                         </span>
                     )}
                     {isEndReached && (
-                        <span className="text-primary-800/50 font-bold text-2xl absolute bottom-2 left-1/2 -translate-x-1/2">
-                            No more Orders to Show
+                        <span className="text-primary-800/50 font-bold text-2xl absolute bottom-2 left-1/2 -translate-x-1/2 w-full text-center">
+                            No more Transactions to Show
                         </span>
                     )}
                 </div>
