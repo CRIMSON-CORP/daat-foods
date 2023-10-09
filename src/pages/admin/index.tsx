@@ -119,6 +119,9 @@ const OrderColors: Record<OrderStatus, string> = {
     pending: 'bg-[#ffb21e]/20 text-[#ffb21e]',
 };
 
+const grid_cols =
+    'px-4 py-2 grid gap-4 grid-cols-1 md:grid-cols-[0.5fr,1.2fr,1fr,1fr,1.2fr,0.8fr,0.5fr,0.8fr] items-center';
+
 function OrderTable({ orders }: { orders: Order[] }) {
     const {
         orders: paginatedOrders,
@@ -130,104 +133,114 @@ function OrderTable({ orders }: { orders: Order[] }) {
         <section className="flex flex-col gap-4 h-full overflow-auto min-h-80">
             <h2 className="text-3xl font-bold text-slate-800">Orders</h2>
             <div ref={listContainerRef} className="overflow-auto">
-                <div className="relative grid gap-4 pr-2 pb-16">
-                    <table className="text-slate-500 border-separate border-spacing-0 text-sm border-spacing-y-4 -mt-4 max-h-full min-w-[1000px]">
-                        <thead>
-                            <tr>
-                                <td className="px-2 py-3 bg-white rounded-l-lg border border-r-transparent border-slate-300">
-                                    <span>ID</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Name</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Phone number</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Email Address</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Transaction Reference</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Total Cost</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                    <span>Status</span>
-                                </td>
-                                <td className="px-2 py-2 bg-white rounded-r-lg border border-l-transparent border-slate-300">
-                                    <span>Action</span>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedOrders.map((order) => (
-                                <tr key={order.id}>
-                                    <td className="px-2 py-3 bg-white rounded-l-lg border border-r-transparent border-slate-300">
-                                        <span className="max-w-[50px] overflow-hidden text-ellipsis whitespace-nowrap inline-block">
-                                            {order.id}
-                                        </span>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                        <span>{order.user.full_name}</span>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300 underline">
-                                        <a
-                                            href={`tel:${order.user.phone_number}`}
-                                        >
-                                            <span>
-                                                {order.user.phone_number}
-                                            </span>
-                                        </a>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300 underline">
-                                        <a href={`mailto:${order.user.email}`}>
-                                            <span>{order.user.email}</span>
-                                        </a>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                        <Link
-                                            className="underline"
-                                            href={`/admin/transaction/${order.transaction_reference}`}
-                                        >
-                                            <span>
-                                                {order.transaction_reference}
-                                            </span>
-                                        </Link>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                        <span>₦{order.total}</span>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white border-y border-slate-300">
-                                        <span
-                                            className={`capitalize px-2 py-1.5 font-medium rounded-lg ${
-                                                OrderColors[order.status]
-                                            }`}
-                                        >
-                                            {order.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-2 py-2 bg-white rounded-r-lg border border-l-transparent border-slate-300">
-                                        <span>
-                                            <Link
-                                                href={`/admin/order/${order.id}`}
-                                                className="px-2 py-1.5 bg-primary-100/20 text-primary-800/70 rounded-lg font-bold clickable border border-primary-100"
-                                            >
-                                                View Order
-                                            </Link>
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="relative grid gap-4 md:pr-2 pb-16">
+                    <div
+                        className={`text-slate-500 ${grid_cols} bg-white border border-slate-300 rounded-lg hidden md:grid`}
+                    >
+                        <div>
+                            <span>ID</span>
+                        </div>
+                        <div>
+                            <span>Name</span>
+                        </div>
+                        <div>
+                            <span>Phone number</span>
+                        </div>
+                        <div>
+                            <span>Email Address</span>
+                        </div>
+                        <div>
+                            <span>Transaction Ref</span>
+                        </div>
+                        <div>
+                            <span>Total Cost</span>
+                        </div>
+                        <div>
+                            <span>Status</span>
+                        </div>
+                        <div>
+                            <span>Action</span>
+                        </div>
+                    </div>
+                    {paginatedOrders.map((order) => (
+                        <div
+                            key={order.id}
+                            className={`text-slate-500 ${grid_cols} bg-white border border-slate-300 rounded-lg`}
+                        >
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">Order ID</span>
+                                <span className="md:max-w-[50px] md:overflow-hidden md:text-ellipsis md:whitespace-nowrap inline-block">
+                                    {order.id}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">Name</span>
+                                <span className="md:max-w-[50px] md:overflow-hidden md:text-ellipsis md:whitespace-nowrap inline-block">
+                                    <span>{order.user.full_name}</span>
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">Phone number</span>
+                                <a
+                                    className="underline"
+                                    href={`tel:${order.user.phone_number} underline`}
+                                >
+                                    <span>{order.user.phone_number}</span>
+                                </a>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">Emaill</span>
+                                <a
+                                    className="underline"
+                                    href={`mailto:${order.user.email} `}
+                                >
+                                    <span>{order.user.email}</span>
+                                </a>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">
+                                    Transaction Ref
+                                </span>
+                                <Link
+                                    className="underline"
+                                    href={`/admin/divansaction/${order.transaction_reference}`}
+                                >
+                                    <span>{order.transaction_reference}</span>
+                                </Link>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">
+                                    Transaction Ref
+                                </span>
+                                <span>₦{order.total.toLocaleString()}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="md:hidden">Status</span>
+                                <span
+                                    className={`capitalize px-2 py-1.5 font-medium rounded-lg ${
+                                        OrderColors[order.status]
+                                    }`}
+                                >
+                                    {order.status}
+                                </span>
+                            </div>
+                            <div>
+                                <Link
+                                    href={`/admin/order/${order.id}`}
+                                    className="px-2 py-1.5 bg-primary-100/20 text-primary-800/70 w-full inline-block text-center md:w-fit rounded-lg font-bold clickable border border-primary-100"
+                                >
+                                    View Order
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
                     {isFetching && (
                         <span className="absolute bottom-2 left-1/2 -translate-x-1/2">
                             <span className="animate-spin inline-block w-12 h-12 rounded-full border-4 border-primary-100/30 border-t-primary-800/60"></span>
                         </span>
                     )}
                     {isEndReached && (
-                        <span className="text-primary-800/50 font-bold text-2xl absolute bottom-2 left-1/2 -translate-x-1/2 w-full text-center">
+                        <span className="text-primary-800/50 font-bold text-xl md:text-2xl absolute bottom-2 left-1/2 -translate-x-1/2 w-full text-center">
                             No more Orders to Show
                         </span>
                     )}

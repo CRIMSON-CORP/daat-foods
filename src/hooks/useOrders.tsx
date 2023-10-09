@@ -35,10 +35,18 @@ function useOrders(currentList: Order[] = []) {
         const { current: listContainer } = listContainerRef;
 
         const handleListContainerSCrollEvent = (e: Event) => {
+            console.log(listContainer?.scrollTop, 'top');
+            console.log(
+                Number(listContainer?.scrollHeight) -
+                    Number(listContainer?.clientHeight) -
+                    1,
+                'top-height',
+            );
             if (
-                Number(listContainer?.scrollTop) ===
+                Number(listContainer?.scrollTop) >=
                     Number(listContainer?.scrollHeight) -
-                        Number(listContainer?.clientHeight) &&
+                        Number(listContainer?.clientHeight) -
+                        1 &&
                 requestStatus === 'idle' &&
                 !endReached
             ) {

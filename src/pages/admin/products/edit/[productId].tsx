@@ -95,7 +95,7 @@ function EditProduct({ product, productId }: PageProps) {
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
             <header className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold text-slate-600">
+                <h1 className="text-xl md:text-3xl font-bold text-slate-600">
                     <span className="opacity-70">Product</span> / {productId}
                 </h1>
             </header>
@@ -115,7 +115,7 @@ function EditProduct({ product, productId }: PageProps) {
                         type="file"
                         id="product-image"
                         onChange={handleFileSelect}
-                        className="opacity-0 absolute top-1/2 left-1/2"
+                        className="opacity-0 w-0 absolute top-1/2 left-1/2"
                         accept={acceptedFilesForImage.join(',')}
                     />
                 </label>

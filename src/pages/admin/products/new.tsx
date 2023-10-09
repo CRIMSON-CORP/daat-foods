@@ -122,7 +122,7 @@ function NewProduct() {
                         type="file"
                         id="product-image"
                         onChange={handleFileSelect}
-                        className="opacity-0 absolute top-1/2 left-1/2"
+                        className="opacity-0 w-0 absolute top-1/2 left-1/2"
                         accept={acceptedFilesForImage.join(',')}
                     />
                 </label>

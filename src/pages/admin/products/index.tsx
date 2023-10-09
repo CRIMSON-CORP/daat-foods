@@ -19,13 +19,13 @@ import { useDispatch, useSelector } from 'react-redux';
 function Products({ products }: { products: ProductItem[] }) {
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
-            <header className="flex items-center justify-between">
+            <header className="flex items-start md:items-center flex-col md:flex-row justify-between">
                 <h1 className="text-3xl font-bold text-slate-600">
                     <span>Products</span>
                 </h1>
                 <Link
                     href="products/new"
-                    className="bg-primary-100 text-primary-800 font-semibold text-sm rounded-md px-4 py-2 flex items-center gap-1 clickable"
+                    className="bg-primary-100 text-primary-800 font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-1 clickable"
                 >
                     <Image width={24} height={24} alt="plus" src="/plus.svg" />{' '}
                     <span>Add new Product</span>

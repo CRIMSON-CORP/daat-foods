@@ -6,6 +6,7 @@ import { closeSideBar, openSideBar } from '@/redux/uiReducer/actions';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function DashboardLayout({ children }: { children: React.ReactElement }) {
@@ -17,7 +18,7 @@ function DashboardLayout({ children }: { children: React.ReactElement }) {
                     <NavBar />
                     <section
                         id="main"
-                        className="lg:px-8 md:px-6 sm:px-4 px-3 h-full md:pb-0 pb-20 max-h-full bg-primary-100/10 rounded-3xl overflow-auto"
+                        className="lg:px-8 md:px-6 sm:px-4 px-3 h-full md:pb-0 pb-7 max-h-full bg-primary-100/10 rounded-3xl overflow-auto"
                     >
                         {children}
                     </section>
@@ -72,7 +73,9 @@ const Sidebar = () => {
     };
     const { pathname } = useRouter();
 
-    console.log(sideBarOpen);
+    useEffect(() => {
+        dispatch(closeSideBar());
+    }, [dispatch, pathname]);
 
     return (
         <nav
