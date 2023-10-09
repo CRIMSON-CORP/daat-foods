@@ -2,8 +2,10 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     closeDeleteProductkModal,
     closeRestockModal,
+    closeSideBar,
     openDeleteProductModal,
     openRestockModal,
+    openSideBar,
 } from './actions';
 
 const initialState = {
@@ -11,6 +13,7 @@ const initialState = {
     productIdForRestock: '',
     openDeleteProductModal: false,
     productIdForDelete: '',
+    sideBarOpen: false,
 };
 
 const uiReducer = createReducer(initialState, (builder) => {
@@ -29,6 +32,12 @@ const uiReducer = createReducer(initialState, (builder) => {
     builder.addCase(closeDeleteProductkModal, (state) => {
         state.openDeleteProductModal = false;
         state.productIdForDelete = '';
+    });
+    builder.addCase(openSideBar, (state) => {
+        state.sideBarOpen = true;
+    });
+    builder.addCase(closeSideBar, (state) => {
+        state.sideBarOpen = false;
     });
 });
 

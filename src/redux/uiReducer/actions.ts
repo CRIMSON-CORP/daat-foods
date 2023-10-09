@@ -36,3 +36,15 @@ export const closeDeleteProductkModal = createAction(
         };
     },
 );
+
+export const openSideBar = createAction('ui/open-side-bar', () => {
+    return {
+        payload: {},
+    };
+});
+
+export const closeSideBar = createAction('ui/close-side-bar', () => {
+    return {
+        payload: {},
+    };
+});
