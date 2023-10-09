@@ -37,7 +37,7 @@ function Transaction({ transaction, transactionId }: PageProps) {
 export default Transaction;
 
 Transaction.getLayout = (page: React.ReactElement, pageProps: any) => (
-    <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
+    <DashboardLayout>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
@@ -59,11 +59,6 @@ export const getServerSideProps: GetServerSideProps = ProtectDashboard(
             props: {
                 transaction: transaction.data,
                 transactionId: transaction.id,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },

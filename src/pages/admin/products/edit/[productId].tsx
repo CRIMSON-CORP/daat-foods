@@ -188,7 +188,7 @@ function EditProduct({ product, productId }: PageProps) {
 export default EditProduct;
 
 EditProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
-    <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
+    <DashboardLayout>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
@@ -209,11 +209,6 @@ export const getServerSideProps: GetServerSideProps = ProtectDashboard(
             props: {
                 product,
                 productId: id,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },

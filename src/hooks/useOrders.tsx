@@ -42,8 +42,6 @@ function useOrders(currentList: Order[] = []) {
                 requestStatus === 'idle' &&
                 !endReached
             ) {
-                console.log('scrolling');
-
                 fetchMore();
             }
         };

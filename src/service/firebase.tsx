@@ -76,8 +76,6 @@ export async function getProducts() {
         });
     });
 
-    console.log(products);
-
     return products;
 }
 

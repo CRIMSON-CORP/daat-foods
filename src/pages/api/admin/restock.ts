@@ -11,7 +11,6 @@ export default async function handler(
         await restockProduct(productId as string, parseInt(amount as string));
         res.status(201).json({ success: true });
     } catch (error: any) {
-        console.log(error.message);
         res.status(500).json({ success: false, message: 'Server error' });
     }
 }

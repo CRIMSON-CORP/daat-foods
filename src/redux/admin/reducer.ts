@@ -20,11 +20,11 @@ if (typeof window !== 'undefined') {
 const adminReducer = createReducer(initialState, (builder) => {
     builder.addCase(addAdminToState, (state, action) => {
         state = action.payload;
-        localStorage.setItem('user', JSON.stringify(state));
+        localStorage.setItem(appUserLocalStorangeName, JSON.stringify(state));
         return state;
     });
     builder.addCase(removeAdminFromState, () => {
-        localStorage.removeItem('user');
+        localStorage.removeItem(appUserLocalStorangeName);
         return initialState;
     });
 });

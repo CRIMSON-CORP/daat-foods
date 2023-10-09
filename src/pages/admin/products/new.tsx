@@ -195,19 +195,13 @@ function NewProduct() {
 export default NewProduct;
 
 NewProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
-    <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
+    <DashboardLayout>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
     async (ctx: GetServerSidePropsContext, currentUser: User) => {
         return {
-            props: {
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
-            },
+            props: {},
         };
     },
 );

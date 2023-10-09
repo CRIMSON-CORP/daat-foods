@@ -11,7 +11,6 @@ export default async function handler(
         const downloadUrl = await uploadImage(imageBase64, filename);
         res.status(200).json({ downloadUrl, success: true });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: 'Server error', success: false });
     }
 }

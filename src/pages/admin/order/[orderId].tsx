@@ -2,7 +2,6 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import axios from '@/lib/axios';
 import { getSingleOrder } from '@/service/firebase';
 import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
 import { serverTimestamp } from 'firebase/firestore';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
@@ -79,11 +78,11 @@ function Order({ order, orderId }: PageProps) {
 export default Order;
 
 Order.getLayout = (page: React.ReactElement, pageProps: any) => (
-    <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
+    <DashboardLayout>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext, currentUser: User) => {
+    async (ctx: GetServerSidePropsContext) => {
         const { orderId } = ctx.query;
 
         if (typeof orderId !== 'string') {
@@ -101,11 +100,6 @@ export const getServerSideProps: GetServerSideProps = ProtectDashboard(
             props: {
                 order: orderDetails.data,
                 orderId: orderDetails.id,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },

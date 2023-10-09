@@ -9,7 +9,6 @@ import {
 } from '@/redux/uiReducer/actions';
 import { getProducts } from '@/service/firebase';
 import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -44,20 +43,15 @@ function Products({ products }: { products: ProductItem[] }) {
 }
 
 Products.getLayout = (page: React.ReactElement, pageProps: any) => (
-    <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>
+    <DashboardLayout>{page}</DashboardLayout>
 );
 
 export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext, currentUser: User) => {
+    async (ctx: GetServerSidePropsContext) => {
         const products = await getProducts();
         return {
             props: {
                 products,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },

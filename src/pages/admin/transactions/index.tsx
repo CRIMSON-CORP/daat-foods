@@ -155,18 +155,13 @@ export const getServerSideProps: GetServerSideProps = ProtectDashboard(
         return {
             props: {
                 transactions,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },
 );
 
 Transactions.getLayout = (page: React.ReactElement, pageProps: any) => {
-    return <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>;
+    return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Transactions;

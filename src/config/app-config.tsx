@@ -1,6 +1,6 @@
 export const revalidateTimeout = 24 * 60 * 60; // a day
 export const appCookieName = 'daat-foods-auth-token';
-export const appUserLocalStorangeName = 'user';
+export const appUserLocalStorangeName = 'daat-foods-admin-user';
 
 export const adminDashboardNavLinks = [
     {

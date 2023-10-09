@@ -11,7 +11,6 @@ import Link from 'next/link';
 interface HomeProps {
     orders: Order[];
     order_metrics: Record<OrderStatus, number>;
-    current_user: User;
 }
 
 function Home({ orders, order_metrics }: HomeProps) {
@@ -24,7 +23,7 @@ function Home({ orders, order_metrics }: HomeProps) {
 }
 
 Home.getLayout = (page: React.ReactElement, pageProps: any) => {
-    return <DashboardLayout pageProps={pageProps}>{page}</DashboardLayout>;
+    return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Home;
@@ -37,11 +36,6 @@ export const getServerSideProps: GetServerSideProps = ProtectDashboard(
             props: {
                 orders: ordersDocs,
                 order_metrics: orderMetrics,
-                current_user: {
-                    name: currentUser.displayName,
-                    email: currentUser.email,
-                    image: currentUser.photoURL,
-                },
             },
         };
     },

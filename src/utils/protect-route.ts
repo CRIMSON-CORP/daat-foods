@@ -1,6 +1,8 @@
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-import { getCurrentUser, signOutAdmin } from '@/service/firebase';
+import { appCookieName } from '@/config/app-config';
+import { signOutAdmin } from '@/service/firebase';
+import { parse } from 'cookie';
 
 function ProtectDashboard(
     getServerSideProps: any = () => {
@@ -12,8 +14,8 @@ function ProtectDashboard(
     return async function getServerSidePropsHOC(
         context: GetServerSidePropsContext,
     ) {
-        const currentUser = getCurrentUser();
-        if (currentUser === null) {
+        const cookie = parse(context.req.headers.cookie || '')[appCookieName];
+        if (cookie === undefined) {
             await signOutAdmin();
             return {
                 redirect: {
@@ -22,7 +24,7 @@ function ProtectDashboard(
                 },
             };
         } else {
-            return getServerSideProps(context, currentUser);
+            return getServerSideProps(context);
         }
     };
 }

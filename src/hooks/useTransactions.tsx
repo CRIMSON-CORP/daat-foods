@@ -42,8 +42,6 @@ function useTransactions(currentList: Transaction[] = []) {
                 requestStatus === 'idle' &&
                 !endReached
             ) {
-                console.log('scrolling');
-
                 fetchMore();
             }
         };
