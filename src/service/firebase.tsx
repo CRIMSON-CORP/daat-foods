@@ -354,6 +354,21 @@ export async function getPaginatedTransactions(
     }
 }
 
+export async function getSingleTransaction(transactionId: string) {
+    try {
+        const transactionQuerySnapshot = await getDoc(
+            doc(transactionCollection, transactionId),
+        );
+        const data = transactionQuerySnapshot.data();
+        if (data) {
+            data.created_at = data.created_at.toDate().getTime().toString();
+        }
+        return { data, id: transactionQuerySnapshot.id };
+    } catch (error) {
+        throw error;
+    }
+}
+
 // Auth
 
 export async function signOutAdmin() {
