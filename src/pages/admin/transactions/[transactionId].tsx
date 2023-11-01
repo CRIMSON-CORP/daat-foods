@@ -1,8 +1,7 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { getSingleTransaction } from '@/service/firebase';
-import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { createContext, useContext } from 'react';
 
@@ -16,6 +15,11 @@ const TraansactionDetailsContext = createContext<Transaction | null>(null);
 function Transaction({ transaction, transactionId }: PageProps) {
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
+            <Head>
+                <title>
+                    {transactionId} | Transaction | Admin | Daat Foods
+                </title>
+            </Head>
             <h1 className="text-3xl font-bold text-slate-600">
                 <Link href="/admin/transactions" className="opacity-70">
                     Transaction
@@ -40,29 +44,29 @@ Transaction.getLayout = (page: React.ReactElement, pageProps: any) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext, currentUser: User) => {
-        const { transactionId } = ctx.query;
+export const getServerSideProps: GetServerSideProps = async (
+    ctx: GetServerSidePropsContext,
+) => {
+    const { transactionId } = ctx.query;
 
-        if (typeof transactionId !== 'string') {
-            return {
-                redirect: {
-                    destination: '/admin',
-                    statusCode: 301,
-                },
-            };
-        }
-
-        const transaction = await getSingleTransaction(transactionId);
-
+    if (typeof transactionId !== 'string') {
         return {
-            props: {
-                transaction: transaction.data,
-                transactionId: transaction.id,
+            redirect: {
+                destination: '/admin',
+                statusCode: 301,
             },
         };
-    },
-);
+    }
+
+    const transaction = await getSingleTransaction(transactionId);
+
+    return {
+        props: {
+            transaction: transaction.data,
+            transactionId: transaction.id,
+        },
+    };
+};
 
 function TransactionSummary() {
     const transaction = useContext(TraansactionDetailsContext);

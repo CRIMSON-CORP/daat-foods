@@ -3,8 +3,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import useOrders from '@/hooks/useOrders';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { getOrderMetrics, getOrders } from '@/service/firebase';
-import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -16,31 +15,34 @@ interface HomeProps {
 function Home({ orders, order_metrics }: HomeProps) {
     return (
         <div className="grid gap-10 pt-10 pb-5 grid-rows-[max-content,minmax(100px,80vh)]">
+            <Head>
+                <title>Admin | Daat Foods</title>
+            </Head>
             <OrderMetrics order_metrics={order_metrics} />
             <OrderTable orders={orders} />
         </div>
     );
 }
 
-Home.getLayout = (page: React.ReactElement, pageProps: any) => {
+Home.getLayout = (page: React.ReactElement) => {
     return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (_: GetServerSidePropsContext, currentUser: User) => {
-        const ordersDocs = await getOrders();
-        const orderMetrics = await getOrderMetrics();
-        return {
-            props: {
-                orders: ordersDocs,
-                order_metrics: orderMetrics,
-            },
-        };
-    },
-);
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const ordersDocs = await getOrders();
+    const orderMetrics = await getOrderMetrics();
 
+    return {
+        props: {
+            orders: ordersDocs,
+            order_metrics: orderMetrics,
+        },
+    };
+};
 function OrderMetrics({
     order_metrics,
 }: {

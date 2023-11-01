@@ -1,17 +1,20 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
-import axios from '@/lib/axios';
-import { addAdminToState } from '@/redux/admin/actions';
-import { getCurrentUser } from '@/service/firebase';
 import delay from '@/utils/delay';
 import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { signIn } from 'next-auth/react';
+import Head from 'next/head';
+import { NextAuthOptions } from './api/auth/[...nextauth]';
 
 function Login() {
     return (
         <div className="flex items-stretch min-h-screen">
+            <Head>
+                <title>Admin Login | Daat Foods</title>
+            </Head>
             <Form />
             <div className="grow w-full hidden justify-center items-center md:flex">
                 <Image
@@ -34,33 +37,33 @@ function Form() {
 
     const { push } = useRouter();
 
-    const dispatch = useDispatch();
-
     const onSubmit: React.FormEventHandler = async (e) => {
         e.preventDefault();
         try {
             setRequestStatus('Signing in...');
-            const { data } = await axios.post('/admin/sign-in', {
+            const response = await signIn('credentials', {
+                callbackUrl: '/admin',
                 email,
                 password,
+                redirect: false,
             });
-            setRequestStatus('Signing Successful...');
 
-            const admin: Admin = {
-                email: data.user.email,
-                id: data.user.uid,
-                image: data.user.photoURL,
-                name: data.user.displayName,
-            };
-            dispatch(addAdminToState(admin));
-            await delay(1000);
-            push('/admin');
+            if (response?.ok === false) {
+                throw new Error(response.error?.toString());
+            }
+
+            push(response?.url?.toString() as string);
         } catch (error: any) {
-            setRequestStatus(
-                `Signing failed...${
-                    error?.response?.data?.message ?? error.message
-                }`,
-            );
+            if (error.message.includes('auth/invalid-login-credentials')) {
+                setRequestStatus('Invalid login Credentials!');
+            } else if (error.message.includes('auth/network-request-failed')) {
+                setRequestStatus('Network Request failed!');
+            } else
+                setRequestStatus(
+                    `Signing failed...${
+                        error?.response?.data?.message ?? error.message
+                    }`,
+                );
         } finally {
             await delay(3000);
             setRequestStatus(``);
@@ -117,7 +120,8 @@ function Form() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    if (getCurrentUser() !== null) {
+    const session = await getServerSession(ctx.req, ctx.res, NextAuthOptions);
+    if (session) {
         return {
             redirect: {
                 destination: '/admin',

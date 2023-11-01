@@ -8,8 +8,8 @@ import {
     openRestockModal,
 } from '@/redux/uiReducer/actions';
 import { getProducts } from '@/service/firebase';
-import ProtectDashboard from '@/utils/protect-route';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,6 +19,9 @@ import { useDispatch, useSelector } from 'react-redux';
 function Products({ products }: { products: ProductItem[] }) {
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
+            <Head>
+                <title>Products | Admin | Daat Foods</title>
+            </Head>
             <header className="flex items-start md:items-center flex-col md:flex-row justify-between">
                 <h1 className="text-3xl font-bold text-slate-600">
                     <span>Products</span>
@@ -46,16 +49,16 @@ Products.getLayout = (page: React.ReactElement) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext) => {
-        const products = await getProducts();
-        return {
-            props: {
-                products,
-            },
-        };
-    },
-);
+export const getServerSideProps: GetServerSideProps = async (
+    ctx: GetServerSidePropsContext,
+) => {
+    const products = await getProducts();
+    return {
+        props: {
+            products,
+        },
+    };
+};
 
 export default Products;
 

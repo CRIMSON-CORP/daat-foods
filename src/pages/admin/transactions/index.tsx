@@ -1,8 +1,6 @@
 import useTransactions from '@/hooks/useTransactions';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { getTransactions } from '@/service/firebase';
-import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 
@@ -149,16 +147,16 @@ const Transactions = ({ transactions }: { transactions: Transaction[] }) => {
     );
 };
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (_: GetServerSidePropsContext, currentUser: User) => {
-        const transactions = await getTransactions();
-        return {
-            props: {
-                transactions,
-            },
-        };
-    },
-);
+export const getServerSideProps: GetServerSideProps = async (
+    _: GetServerSidePropsContext,
+) => {
+    const transactions = await getTransactions();
+    return {
+        props: {
+            transactions,
+        },
+    };
+};
 
 Transactions.getLayout = (page: React.ReactElement, pageProps: any) => {
     return <DashboardLayout>{page}</DashboardLayout>;

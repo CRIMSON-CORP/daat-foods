@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { Raleway } from 'next/font/google';
 import { Provider } from 'react-redux';
@@ -24,10 +25,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page) => page);
 
     return (
-        <Provider store={store}>
-            <main className={raleway.variable}>
-                {getLayout(<Component {...pageProps} />, pageProps)}
-            </main>
-        </Provider>
+        <SessionProvider session={pageProps.session}>
+            <Provider store={store}>
+                <main className={raleway.variable}>
+                    {getLayout(<Component {...pageProps} />, pageProps)}
+                </main>
+            </Provider>
+        </SessionProvider>
     );
 }

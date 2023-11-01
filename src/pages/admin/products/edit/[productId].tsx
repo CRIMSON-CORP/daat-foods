@@ -3,9 +3,8 @@ import axios from '@/lib/axios';
 import { getSingleProduct } from '@/service/firebase';
 import convertFileTobase64 from '@/utils/convert-file-to-base64';
 import delay from '@/utils/delay';
-import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -94,6 +93,9 @@ function EditProduct({ product, productId }: PageProps) {
 
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
+            <Head>
+                <title>{productId} | Edit Product | Admin | Daat Foods</title>
+            </Head>
             <header className="flex items-center justify-between">
                 <h1 className="text-xl md:text-3xl font-bold text-slate-600">
                     <span className="opacity-70">Product</span> / {productId}
@@ -191,25 +193,25 @@ EditProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext, currentUser: User) => {
-        const { productId } = ctx.query;
+export const getServerSideProps: GetServerSideProps = async (
+    ctx: GetServerSidePropsContext,
+) => {
+    const { productId } = ctx.query;
 
-        if (typeof productId !== 'string') {
-            return {
-                redirect: {
-                    destination: '/admin',
-                    statusCode: 301,
-                },
-            };
-        }
-
-        const { product, id } = await getSingleProduct(productId as string);
+    if (typeof productId !== 'string') {
         return {
-            props: {
-                product,
-                productId: id,
+            redirect: {
+                destination: '/admin',
+                statusCode: 301,
             },
         };
-    },
-);
+    }
+
+    const { product, id } = await getSingleProduct(productId as string);
+    return {
+        props: {
+            product,
+            productId: id,
+        },
+    };
+};

@@ -9,10 +9,14 @@ import ProductItem from '@/components/ProductItem';
 import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
 import { getProducts } from '@/service/firebase';
+import Head from 'next/head';
 
 export default function Home({ products }: { products: ProductItem[] }) {
     return (
         <div className="bg-gray-200/50">
+            <Head>
+                <title>Buy your fvavourite food stuffs | Daat Foods</title>
+            </Head>
             <div className="flex flex-col min-h-[65vh] mb-10">
                 <Header />
                 <Hero />

@@ -1,8 +1,8 @@
 import { adminDashboardNavLinks } from '@/config/app-config';
-import axios from '@/lib/axios';
-import { initializeAdmin, removeAdminFromState } from '@/redux/admin/actions';
+import { initializeAdmin } from '@/redux/admin/actions';
 import { RootState } from '@/redux/store';
 import { closeSideBar, openSideBar } from '@/redux/uiReducer/actions';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -121,9 +121,9 @@ const Sidebar = () => {
 
 const NavBar = () => {
     const dispatch = useDispatch();
-    const { email, image, name } = useSelector(
-        (state: RootState) => state.admin,
-    );
+    const session = useSession();
+
+    const { data } = session;
 
     useEffect(() => {
         dispatch(initializeAdmin());
@@ -138,13 +138,13 @@ const NavBar = () => {
                         <Image
                             width={24}
                             height={24}
-                            src={image || '/user.svg'}
-                            alt={name || 'user'}
+                            src={data?.user?.image || '/user.svg'}
+                            alt={data?.user?.name || 'user'}
                             className="object-cover object-center"
                         />
                     </div>
                     <span className="font-semibold hidden md:inline-block">
-                        {name ?? email}
+                        {data?.user?.name ?? data?.user?.email}
                     </span>
                 </div>
                 <Logout />
@@ -154,12 +154,10 @@ const NavBar = () => {
 };
 
 function Logout() {
-    const { push } = useRouter();
-    const dispatch = useDispatch();
     const logout = async () => {
-        dispatch(removeAdminFromState());
-        await axios.post('/admin/sign-out');
-        await push('/admin/login');
+        signOut({
+            callbackUrl: `/login`,
+        });
     };
     return (
         <button

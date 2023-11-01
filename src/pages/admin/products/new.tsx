@@ -2,9 +2,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import axios from '@/lib/axios';
 import convertFileTobase64 from '@/utils/convert-file-to-base64';
 import delay from '@/utils/delay';
-import ProtectDashboard from '@/utils/protect-route';
-import { User } from 'firebase/auth';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -86,6 +84,9 @@ function NewProduct() {
 
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
+            <Head>
+                <title>Add new Product | Admin | Daat Foods</title>
+            </Head>
             <header className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-slate-600">
                     <span className="">New Product</span>
@@ -196,12 +197,4 @@ export default NewProduct;
 
 NewProduct.getLayout = (page: React.ReactElement, pageProps: any) => (
     <DashboardLayout>{page}</DashboardLayout>
-);
-
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext, currentUser: User) => {
-        return {
-            props: {},
-        };
-    },
 );

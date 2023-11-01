@@ -1,9 +1,9 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import axios from '@/lib/axios';
 import { getSingleOrder } from '@/service/firebase';
-import ProtectDashboard from '@/utils/protect-route';
 import { serverTimestamp } from 'firebase/firestore';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createContext, useCallback, useContext, useState } from 'react';
@@ -52,6 +52,9 @@ function Order({ order, orderId }: PageProps) {
 
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
+            <Head>
+                <title>{orderId} | Orders | Admin | Daat Foods</title>
+            </Head>
             <h1 className="text-3xl font-bold text-slate-600">
                 <span className="opacity-70">Order</span> / {orderId}
             </h1>
@@ -81,29 +84,29 @@ Order.getLayout = (page: React.ReactElement, pageProps: any) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
 
-export const getServerSideProps: GetServerSideProps = ProtectDashboard(
-    async (ctx: GetServerSidePropsContext) => {
-        const { orderId } = ctx.query;
+export const getServerSideProps: GetServerSideProps = async (
+    ctx: GetServerSidePropsContext,
+) => {
+    const { orderId } = ctx.query;
 
-        if (typeof orderId !== 'string') {
-            return {
-                redirect: {
-                    destination: '/admin',
-                    statusCode: 301,
-                },
-            };
-        }
-
-        const orderDetails = await getSingleOrder(orderId);
-
+    if (typeof orderId !== 'string') {
         return {
-            props: {
-                order: orderDetails.data,
-                orderId: orderDetails.id,
+            redirect: {
+                destination: '/admin',
+                statusCode: 301,
             },
         };
-    },
-);
+    }
+
+    const orderDetails = await getSingleOrder(orderId);
+
+    return {
+        props: {
+            order: orderDetails.data,
+            orderId: orderDetails.id,
+        },
+    };
+};
 
 function ItemSummary() {
     const { cart } = useContext(OrderDetailsContext);
