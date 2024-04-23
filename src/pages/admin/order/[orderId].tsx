@@ -38,22 +38,24 @@ function Order({ order, orderId }: PageProps) {
                 const { data } = await axios.post(
                     '/admin/update-order-status',
                     {
-                        status,
                         orderId,
+                        ...order,
+                        status,
                     },
                 );
+
                 setOrderStatus(data.status);
             } catch (error: any) {
                 alert(error.message);
             }
         },
-        [orderId],
+        [orderId, order],
     );
 
     return (
         <div className="py-10 text-slate-600 flex flex-col gap-10">
             <Head>
-                <title>{orderId} | Orders | Admin | Daat Foods</title>
+                <title>{`${orderId} | Orders | Admin | Daat Foods`}</title>
             </Head>
             <h1 className="text-3xl font-bold text-slate-600">
                 <span className="opacity-70">Order</span> / {orderId}

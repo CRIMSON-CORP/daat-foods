@@ -53,31 +53,36 @@ const transactionCollection = collection(firestore, 'transactions');
 const ordersCollection = collection(firestore, 'orders');
 
 export async function getProducts() {
-    const productsQuerySnapshot = await getDocs(productCollection);
-    const products: ProductItem[] = [];
+    try {
+        const productsQuerySnapshot = await getDocs(productCollection);
+        const products: ProductItem[] = [];
 
-    productsQuerySnapshot.forEach((doc) => {
-        const {
-            name,
-            created_at,
-            image,
-            price,
-            quantity_in_stock,
-            updated_at,
-        } = doc.data();
+        productsQuerySnapshot.forEach((doc) => {
+            const {
+                name,
+                created_at,
+                image,
+                price,
+                quantity_in_stock,
+                updated_at,
+            } = doc.data();
 
-        products.push({
-            id: doc.id,
-            name,
-            created_at: created_at.toDate().getTime().toString(),
-            updated_at: updated_at?.toDate().getTime().toString() || null,
-            image,
-            price,
-            quantity_in_stock,
+            products.push({
+                id: doc.id,
+                name,
+                created_at: created_at.toDate().getTime().toString(),
+                updated_at: updated_at?.toDate().getTime().toString() || null,
+                image,
+                price,
+                quantity_in_stock,
+            });
         });
-    });
 
-    return products;
+        return products;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
 }
 
 export async function getSingleProduct(productId: string) {

@@ -158,6 +158,15 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
                 dispatch(clearCart());
 
                 setModalView('success');
+
+                await axios.post('/email/update-order-status', {
+                    transaction_reference: config.reference,
+                    cart,
+                    total,
+                    user,
+                    status: 'pending',
+                    orderId: refId,
+                });
             } catch (error: any) {
                 setRequestStatus(
                     `An error ocurred! - ${
@@ -170,7 +179,16 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
                 setModalView('failed');
             }
         })();
-    }, [config.reference, createOrder, dispatch, setModalView, setOrderId]);
+    }, [
+        cart,
+        config.reference,
+        createOrder,
+        dispatch,
+        setModalView,
+        setOrderId,
+        total,
+        user,
+    ]);
 
     const onClose = () => {
         setRequestStatus('');

@@ -6,6 +6,7 @@ import { getOrderMetrics, getOrders } from '@/service/firebase';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface HomeProps {
     orders: Order[];
@@ -131,9 +132,26 @@ function OrderTable({ orders }: { orders: Order[] }) {
         isFetching,
         isEndReached,
     } = useOrders(orders);
+    const {
+        query: { search },
+    } = useRouter();
     return (
         <section className="flex flex-col gap-4 h-full overflow-auto min-h-80">
             <h2 className="text-3xl font-bold text-slate-800">Orders</h2>
+            <form className="flex items-center gap-4 max-w-xl whitespace-nowrap">
+                <input
+                    className="px-4 py-2 text-slate-500 bg-white border border-slate-300 rounded-lg w-full"
+                    placeholder="Search Order by ID, email, name, phone number, transaction ref"
+                />
+                <button className="py-2 px-4 bg-primary-800/50 text-white rounded-lg">
+                    Search
+                </button>
+                {search && (
+                    <button className="py-2 px-4 bg-primary-800/10 text-primary-800/60 rounded-lg">
+                        Clear Search
+                    </button>
+                )}
+            </form>
             <div ref={listContainerRef} className="overflow-auto">
                 <div className="relative grid gap-4 md:pr-2 pb-16">
                     <div
