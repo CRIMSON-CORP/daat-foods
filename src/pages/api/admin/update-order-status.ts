@@ -2,6 +2,7 @@ import { updateOrderStatus } from '@/service/firebase';
 import orderCompletedTemplate from '@/templates/emails/completed';
 import orderFailedTemplate from '@/templates/emails/failed';
 import orderInprogressTemplate from '@/templates/emails/in-progress';
+import newOrderTemplate from '@/templates/emails/new-order';
 import orderCreatedTemplate from '@/templates/emails/order-created';
 import transporter from '@/utils/nodemailer-transport';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -47,6 +48,17 @@ export default async function handler(
 
         await transporter.sendMail(mailOptions);
         res.status(200).json({ success: true, status });
+
+        if (status === 'pending') {
+            var mailOptionsAdmin: Options = {
+                from: user.email,
+                // to: process.env.NODEMAILER_SENDER,
+                to: 'feranmibalogun8@gmail.com',
+                subject: 'You have a new Order',
+                html: newOrderTemplate({ ...req.body, id: orderId }),
+            };
+            transporter.sendMail(mailOptionsAdmin);
+        }
     } catch (error) {
         console.log(error);
 

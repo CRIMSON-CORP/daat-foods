@@ -8,8 +8,8 @@ export default async function handler(
     const order = req.body;
 
     try {
-        const docRefId = await createOrder(order);
-        res.status(201).json({ success: true, refId: docRefId });
+        const doc = await createOrder(order);
+        res.status(201).json({ success: true, ...doc });
     } catch (error) {
         res.status(500).json({ success: false });
     }

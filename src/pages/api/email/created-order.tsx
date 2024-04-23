@@ -19,6 +19,13 @@ export default async function handler(
 
         await transporter.sendMail(mailOptions);
         res.status(200).json({ success: true });
+
+        var mailOptionsAdmin: Options = {
+            from: user.email,
+            to: process.env.NODEMAILER_SENDER,
+            subject: 'Your Order has been Taken',
+            html: orderCreatedTemplate(req.body),
+        };
     } catch (error) {
         console.log(error);
 

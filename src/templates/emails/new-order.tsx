@@ -10,7 +10,7 @@ interface Params {
     total: number;
 }
 
-export default function orderCreatedTemplate({
+export default function newOrderTemplate({
     user,
     created_at,
     id,
@@ -18,9 +18,6 @@ export default function orderCreatedTemplate({
     transaction_reference,
     total,
 }: Order) {
-    const firstName = user.full_name.split(' ')[0];
-    console.log(created_at);
-
     return `
     <!DOCTYPE html>
 <html lang="en">
@@ -48,18 +45,10 @@ export default function orderCreatedTemplate({
       <div style="padding: 24px">
         <div>
           <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 16px">
-            Hey <b>${firstName}</b>
+            Hey MKDAAT
           </h1>
           <p style="font-weight: 300; font-size: 18px">
-            Thanks a lot for your purchase!
-          </p>
-          <p>
-            Thank you for shopping with DAAT FOODS on <b>${new Date(
-                Number(created_at),
-            ).toDateString()}</b>, your order
-            <b>${id}</b> has been received and will be packed and deliverd to you
-            as soon as possible. you will be notified once your item(s) are
-            ready to be delivered!
+           You have a new Order
           </p>
         </div>
         <div>

@@ -165,7 +165,14 @@ export async function createOrder(order: Order) {
         ...order,
         created_at: serverTimestamp(),
     });
-    return docRef.id;
+
+    const docSnapshot = await getDoc(docRef);
+    const orderData = docSnapshot.data();
+
+    return {
+        ref: docRef.id,
+        created_at: orderData?.created_at.toDate().getTime().toString(),
+    };
 }
 
 export async function signInAdmin(email: string, password: string) {

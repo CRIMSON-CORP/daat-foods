@@ -114,7 +114,7 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
                 payload,
             );
 
-            return data.refId;
+            return data;
         } catch (error) {
             throw error;
         }
@@ -146,26 +146,27 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
                 // create order and store in databse
                 setRequestStatus('Creating your Order...');
 
-                const refId = await createOrder();
+                const { ref, created_at } = await createOrder();
 
                 setRequestStatus('Order Created Successfully');
 
                 await delay(1000);
 
                 // finish
-                setOrderId(refId);
+                setOrderId(ref);
 
                 dispatch(clearCart());
 
                 setModalView('success');
 
-                await axios.post('/email/update-order-status', {
+                await axios.post('/admin/update-order-status', {
                     transaction_reference: config.reference,
                     cart,
                     total,
                     user,
                     status: 'pending',
-                    orderId: refId,
+                    orderId: ref,
+                    created_at,
                 });
             } catch (error: any) {
                 setRequestStatus(
