@@ -95,8 +95,13 @@ const Form: FC<FormProps> = ({ setModalView, setOrderId }) => {
             email,
             amount: total * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
             publicKey: `${process.env.NEXT_PUBLIC_PAYSTACK_API_KEY}`,
+            metadata: {
+                user,
+                cart,
+                custom_fields: [],
+            },
         }),
-        [email, total],
+        [cart, email, total, user],
     );
 
     const createOrder = useCallback(async () => {

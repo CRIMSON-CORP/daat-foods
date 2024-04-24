@@ -13,6 +13,7 @@ import {
     getFirestore,
     increment,
     limit,
+    or,
     orderBy,
     query,
     serverTimestamp,
@@ -242,6 +243,61 @@ export async function getPaginatedOrders(start_at: number, end_at: number) {
     }
 }
 
+export async function searchOrders(searchQuery: string) {
+    const docs = [];
+    try {
+        if (searchQuery.length === 20) {
+            const docFromId = doc(ordersCollection, searchQuery);
+            const docSnapshot = await getDoc(docFromId);
+            if (docSnapshot.exists()) {
+                const docData = docSnapshot.data();
+                docs.push({
+                    id: docSnapshot.id,
+                    cart: docData.cart,
+                    created_at: docData.created_at
+                        .toDate()
+                        .getTime()
+                        .toString(),
+                    status: docData.status,
+                    total: docData.total,
+                    transaction_reference: docData.transaction_reference,
+                    user: docData.user,
+                });
+            }
+        }
+        if (docs.length === 0) {
+            const orderTableQuery = query(
+                ordersCollection,
+                or(
+                    where('user.name', '==', searchQuery),
+                    where('user.email', '==', searchQuery),
+                    where('user.phone_number', '==', searchQuery),
+                    where('transaction_reference', '==', searchQuery),
+                ),
+            );
+            const ordersQuerySnapshot = await getDocs(orderTableQuery);
+            ordersQuerySnapshot.forEach((doc) => {
+                docs.push({
+                    id: doc.id,
+                    cart: doc.data().cart,
+                    created_at: doc
+                        .data()
+                        .created_at.toDate()
+                        .getTime()
+                        .toString(),
+                    status: doc.data().status,
+                    total: doc.data().total,
+                    transaction_reference: doc.data().transaction_reference,
+                    user: doc.data().user,
+                });
+            });
+        }
+        return docs;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function updateOrderStatus(orderId: string, status: string) {
     try {
         await updateDoc(doc(ordersCollection, orderId), {
@@ -339,6 +395,32 @@ export async function getTransactions() {
         throw error;
     }
 }
+
+export async function getTransaction(ref: string) {
+    try {
+        const transactionRef = doc(transactionCollection, ref);
+        const transactionSnapshot = await getDoc(transactionRef);
+
+        const list: Transaction[] = [];
+
+        if (transactionSnapshot.exists()) {
+            const data = transactionSnapshot.data() as Transaction;
+            list.push({
+                ...data,
+                created_at: transactionSnapshot
+                    .data()
+                    .created_at.toDate()
+                    .getTime()
+                    .toString(),
+            });
+        }
+
+        return list;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function getPaginatedTransactions(
     start_at: number,
     end_at: number,

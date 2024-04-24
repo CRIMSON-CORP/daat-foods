@@ -2,7 +2,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import useOrders from '@/hooks/useOrders';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { getOrderMetrics, getOrders } from '@/service/firebase';
+import { getOrderMetrics, getOrders, searchOrders } from '@/service/firebase';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -34,13 +34,23 @@ export default Home;
 export const getServerSideProps: GetServerSideProps = async (
     context: GetServerSidePropsContext,
 ) => {
-    const ordersDocs = await getOrders();
-    const orderMetrics = await getOrderMetrics();
+    const { search_query } = context.query;
+
+    const ordersFetch = search_query
+        ? searchOrders(search_query as string)
+        : getOrders();
+
+    const orderMetricsFetch = getOrderMetrics();
+
+    const [orders, order_metrics] = await Promise.all([
+        ordersFetch,
+        orderMetricsFetch,
+    ]);
 
     return {
         props: {
-            orders: ordersDocs,
-            order_metrics: orderMetrics,
+            orders,
+            order_metrics,
         },
     };
 };
@@ -133,29 +143,39 @@ function OrderTable({ orders }: { orders: Order[] }) {
         isEndReached,
     } = useOrders(orders);
     const {
-        query: { search },
+        query: { search_query },
     } = useRouter();
+
     return (
         <section className="flex flex-col gap-4 h-full overflow-auto min-h-80">
             <h2 className="text-3xl font-bold text-slate-800">Orders</h2>
             <form className="flex items-center gap-4 max-w-xl whitespace-nowrap">
                 <input
+                    key={search_query as string | undefined}
+                    name="search_query"
+                    defaultValue={search_query}
                     className="px-4 py-2 text-slate-500 bg-white border border-slate-300 rounded-lg w-full"
                     placeholder="Search Order by ID, email, name, phone number, transaction ref"
                 />
                 <button className="py-2 px-4 bg-primary-800/50 text-white rounded-lg">
                     Search
                 </button>
-                {search && (
-                    <button className="py-2 px-4 bg-primary-800/10 text-primary-800/60 rounded-lg">
+                {search_query && (
+                    <Link
+                        href=""
+                        className="py-2 px-4 bg-primary-800/10 text-primary-800/60 rounded-lg"
+                    >
                         Clear Search
-                    </button>
+                    </Link>
                 )}
             </form>
-            <div ref={listContainerRef} className="overflow-auto">
+            <div
+                ref={listContainerRef}
+                className="overflow-auto whitespace-nowrap"
+            >
                 <div className="relative grid gap-4 md:pr-2 pb-16">
                     <div
-                        className={`text-slate-500 ${grid_cols} bg-white border border-slate-300 rounded-lg hidden md:grid`}
+                        className={`text-slate-500 ${grid_cols} bg-white border border-slate-300 rounded-lg hidden md:grid sticky top-0 left-0`}
                     >
                         <div>
                             <span>ID</span>
@@ -195,7 +215,7 @@ function OrderTable({ orders }: { orders: Order[] }) {
                             </div>
                             <div className="flex items-center justify-between gap-2">
                                 <span className="md:hidden">Name</span>
-                                <span className="md:max-w-[50px] md:overflow-hidden md:text-ellipsis md:whitespace-nowrap inline-block">
+                                <span className="md:max-w-full md:overflow-hidden md:text-ellipsis md:whitespace-nowrap inline-block">
                                     <span>{order.user.full_name}</span>
                                 </span>
                             </div>
@@ -254,6 +274,11 @@ function OrderTable({ orders }: { orders: Order[] }) {
                             </div>
                         </div>
                     ))}
+                    {paginatedOrders.length === 0 && (
+                        <div className="text-slate-500 bg-white border border-slate-300 rounded-lg p-4 text-center">
+                            <p>No Orders</p>
+                        </div>
+                    )}
                     {isFetching && (
                         <span className="absolute bottom-2 left-1/2 -translate-x-1/2">
                             <span className="animate-spin inline-block w-12 h-12 rounded-full border-4 border-primary-100/30 border-t-primary-800/60"></span>

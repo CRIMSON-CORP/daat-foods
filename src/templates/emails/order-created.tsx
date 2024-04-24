@@ -19,7 +19,6 @@ export default function orderCreatedTemplate({
     total,
 }: Order) {
     const firstName = user.full_name.split(' ')[0];
-    console.log(created_at);
 
     return `
     <!DOCTYPE html>

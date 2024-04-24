@@ -90,7 +90,8 @@ interface Transaction {
         plan: null;
         currency: 'NGN';
         metadata: {
-            referrer: 'http://localhost:3000/#shop';
+            user: User;
+            cart: CartItem[];
         };
         pos_transaction_data: null;
         order_id: null;

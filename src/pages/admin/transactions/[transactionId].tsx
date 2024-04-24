@@ -142,20 +142,19 @@ function CustomerDetails() {
                 <div className="flex items-baseline justify-between">
                     <span>Full name</span>
                     <span className="font-semibold">
-                        {transaction?.data.customer.first_name}{' '}
-                        {transaction?.data.customer.last_name}
+                        {transaction?.data.metadata?.user?.full_name}
                     </span>
                 </div>
                 <div className="flex items-baseline justify-between">
                     <span>Email</span>
                     <span className="font-semibold">
-                        {transaction?.data.customer.email}
+                        {transaction?.data.metadata?.user?.email}
                     </span>
                 </div>
                 <div className="flex items-baseline justify-between">
                     <span>Phone number</span>
                     <span className="font-semibold">
-                        {transaction?.data.customer.phone}
+                        {transaction?.data.metadata?.user?.phone_number}
                     </span>
                 </div>
             </div>

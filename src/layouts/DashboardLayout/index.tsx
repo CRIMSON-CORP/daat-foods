@@ -14,7 +14,7 @@ function DashboardLayout({ children }: { children: React.ReactElement }) {
         <div className="h-screen">
             <main className="relative text-white min-h-screen flex">
                 <Sidebar />
-                <section className="container h-screen min-h-screen flex-grow flex flex-col w-full pb-5">
+                <section className="h-screen min-h-screen flex-grow flex flex-col w-full pb-5 overflow-auto">
                     <NavBar />
                     <section
                         id="main"

@@ -16,8 +16,8 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                header: ['var(--raleway)', 'sans-serif'],
-                body: ['var(--raleway)', 'sans-serif'],
+                header: ['var(__className_871fe7)', 'sans-serif'],
+                body: ['var(__className_871fe7)', 'sans-serif'],
             },
             container: {
                 center: true,

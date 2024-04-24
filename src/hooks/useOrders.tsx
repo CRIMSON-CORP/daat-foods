@@ -60,6 +60,10 @@ function useOrders(currentList: Order[] = []) {
         };
     }, [endReached, fetchMore, requestStatus]);
 
+    useEffect(() => {
+        setOrders(currentList);
+    }, [currentList]);
+
     return {
         listContainerRef,
         orders,
