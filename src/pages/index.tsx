@@ -80,7 +80,16 @@ function Header() {
             }`}
         >
             <div className="container relative flex items-center justify-between gap-5">
-                <div className="">LOGO</div>
+                <div className="">
+                    <Link href="/" className="max-w-[55px]">
+                        <Image
+                            width={55}
+                            height={97.39}
+                            src="/logo-white.png"
+                            alt="daat foods logo"
+                        />
+                    </Link>
+                </div>
                 <nav className="absolute md:relative top-full right-5">
                     <ul
                         className={`uppercase tracking-wide flex flex-col md:flex-row gap-3 md:items-center p-4 rounded-xl border-2 border-white/10 ${
