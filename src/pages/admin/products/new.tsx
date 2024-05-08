@@ -79,6 +79,9 @@ function NewProduct() {
             back();
         } catch (error: any) {
             alert(error.message);
+        } finally {
+            setRequestStatus('idle');
+            setRequestFeedback('');
         }
     };
 
