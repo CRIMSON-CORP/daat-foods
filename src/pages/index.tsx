@@ -81,7 +81,10 @@ function Header() {
         >
             <div className="container relative flex items-center justify-between gap-5">
                 <div className="">
-                    <Link href="/" className="max-w-[55px]">
+                    <Link
+                        href="/"
+                        className="inline-block w-full max-w-[32px] md:max-w-[55px]"
+                    >
                         <Image
                             width={55}
                             height={97.39}
@@ -148,7 +151,7 @@ function Hero() {
                 alt="hero image"
                 height={700}
                 width={962.5}
-                src="/hero-image.jpg"
+                src="/hero-image.webp"
                 className="hero-background absolute inset-0 top-0 right-0 w-full h-full object-cover object-center brightness-[0.65] -z-10"
             />
             <div className="container overflow-hidden grow rounded relative isolate flex items-center justify-center">
