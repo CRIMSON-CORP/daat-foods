@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import CartView from '@/components/CartView';
 import HeaderCart from '@/components/HeaderCart';
 import ProductItem from '@/components/ProductItem';
-import { revalidateTimeout } from '@/config/app-config';
 import useToggle from '@/hooks/useToggle';
 import { getProducts } from '@/service/firebase';
 import Head from 'next/head';
@@ -31,7 +30,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     const products = await getProducts();
     return {
         props: { products },
-        revalidate: revalidateTimeout,
     };
 };
 
