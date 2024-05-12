@@ -1,4 +1,4 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -26,7 +26,7 @@ export default function Home({ products }: { products: ProductItem[] }) {
     );
 }
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const products = await getProducts();
     return {
         props: { products },
