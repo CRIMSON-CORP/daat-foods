@@ -7,6 +7,7 @@ import CartView from '@/components/CartView';
 import HeaderCart from '@/components/HeaderCart';
 import ProductItem from '@/components/ProductItem';
 import useToggle from '@/hooks/useToggle';
+import axios from '@/lib/axios';
 import { getProducts } from '@/service/firebase';
 import Head from 'next/head';
 
@@ -14,7 +15,7 @@ export default function Home({ products }: { products: ProductItem[] }) {
     return (
         <div className="bg-gray-200/50">
             <Head>
-                <title>Buy your fvavourite food stuffs | Daat Foods</title>
+                <title>Buy your Favourite food stuffs | Daat Foods</title>
             </Head>
             <div className="flex flex-col min-h-[65vh] mb-10">
                 <Header />
@@ -153,10 +154,11 @@ function Hero() {
                 className="hero-background absolute inset-0 top-0 right-0 w-full h-full object-cover object-center brightness-[0.65] -z-10"
             />
             <div className="container overflow-hidden grow rounded relative isolate flex items-center justify-center">
-                <div className="flex flex-col gap-6 items-center text-white max-w-3xl text-center">
+                <div className="flex flex-col gap-6 items-center text-white max-w-6xl text-center">
                     <h3 className="uppercase text-xs md:text-sm">daat foods</h3>
-                    <h1 className="font-bold text-4xl md:text-6xl tracking-wide">
-                        Get Quality Food Stuff at your Door Step!
+                    <h1 className="font-bold text-3xl md:text-6xl tracking-wide !leading-snug">
+                        Your One-Stop Foodstuff shop: Quality and Affordable
+                        Food Delivered Right to You!
                     </h1>
                 </div>
             </div>
@@ -188,6 +190,28 @@ function Shop({ products }: { products: ProductItem[] }) {
 }
 
 function Contact() {
+    const onFormSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const email = formData.get('email') as string;
+        const name = formData.get('name') as string;
+        const message = formData.get('message') as string;
+
+        try {
+            form.classList.add('sending');
+            const { data } = await axios.post('/email/contact', {
+                email,
+                name,
+                message,
+            });
+            alert(data.message);
+        } catch (error: any) {
+            alert(error.response.data.message);
+        } finally {
+            form.classList.remove('sending');
+        }
+    };
     return (
         <section id="contact" className="relative min-h-screen grid">
             <Image
@@ -255,24 +279,35 @@ function Contact() {
                         <h3 className="text-lg font-semibold">Our Socials</h3>
                         <div className="flex flex-wrap gap-5 underline text-base text-slate-200 max-w-xs">
                             <a href="">Twitter</a>
-                            <a href="">Facebook</a>
-                            <a href="">Instagram</a>
-                            <a href="">Whatsapp</a>
+                            <a href="https://www.facebook.com/profile.php?id=100078439475947&mibextid=ZbWKwL">
+                                Facebook
+                            </a>
+                            <a href="https://www.instagram.com/daatfoods?igsh=MTJqcHI3MnJvdHZycg==">
+                                Instagram
+                            </a>
+                            <a href="https://wa.me/message/HHNC5ARAPKF7E1">
+                                Whatsapp
+                            </a>
                             <a href="">Linkedin</a>
                         </div>
                     </footer>
                 </div>
                 <div className="grow w-full flex flex-col justify-center px-4 md:px-10 gap-16 border-l border-r border-white/10 bg-white/10 backdrop-blur-xl text-white py-16">
                     <h2 className="text-2xl font-bold">Contact Us!</h2>
-                    <form className="flex flex-col gap-10">
+                    <form
+                        onSubmit={onFormSubmit}
+                        className="flex flex-col gap-10 group"
+                    >
                         <div className="flex flex-col gap-4">
                             <label htmlFor="name" className="font-semibold">
                                 Your Name*
                             </label>
                             <input
                                 id="name"
+                                name="name"
                                 type="text"
                                 required
+                                autoComplete="on"
                                 className="border-b border-white bg-transparent w-full px-6 py-4 outline-none text-lg"
                             />
                         </div>
@@ -282,7 +317,9 @@ function Contact() {
                             </label>
                             <input
                                 id="email"
+                                name="email"
                                 type="email"
+                                autoComplete="on"
                                 required
                                 className="border-b border-white bg-transparent w-full px-6 py-4 outline-none text-lg"
                             />
@@ -293,13 +330,14 @@ function Contact() {
                             </label>
                             <textarea
                                 id="message"
+                                name="message"
                                 required
                                 className="border-b border-white bg-transparent w-full px-6 py-4 outline-none text-lg min-h-[100px]"
                             ></textarea>
                         </div>
                         <button
                             type="submit"
-                            className="clickable w-full inline-block px-10 py-4 md:py-6 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
+                            className="group-[.sending]:pointer-events-none group-[.sending]:opacity-50 clickable w-full inline-block px-10 py-4 md:py-6 rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl text-lg font-semibold"
                         >
                             Send Message
                         </button>

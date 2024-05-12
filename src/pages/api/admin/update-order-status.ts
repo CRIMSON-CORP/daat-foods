@@ -52,8 +52,7 @@ export default async function handler(
         if (status === 'pending') {
             var mailOptionsAdmin: Options = {
                 from: user.email,
-                // to: process.env.NODEMAILER_SENDER,
-                to: 'feranmibalogun8@gmail.com',
+                to: process.env.NODEMAILER_SENDER,
                 subject: 'You have a new Order',
                 html: newOrderTemplate({ ...req.body, id: orderId }),
             };
