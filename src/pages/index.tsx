@@ -218,7 +218,7 @@ function Contact() {
                 height={700}
                 width={962.5}
                 alt="contact image"
-                src="/hero-image.jpg"
+                src="/hero-image.webp"
                 className="w-full h-full inset-0 -z-10 absolute brightness-[0.4] object-cover object-center"
             />
             <div className="container h-full grid grid-cols-1 md:grid-cols-2 text-white gap-16 items-stretch">
@@ -228,9 +228,11 @@ function Contact() {
                             You can reach us from anywhere!
                         </h2>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Voluptate, dolore perspiciatis. Expedita magni
-                            praesentium cumque!
+                            We deliver everywhere! <br /> <br /> <br />
+                            No matter where you are, DAAT Foods brings fresh,
+                            quality products right to your doorstep. Distance is
+                            never a barrier — we make sure you enjoy the best,
+                            hassle-free
                         </p>
                     </header>
                     <ul className="flex flex-col text-lg font-medium gap-12">
@@ -258,7 +260,7 @@ function Contact() {
                                     className="text-white h-5"
                                 />
                             </div>
-                            <a href="tel:0802656456232">0802656456232</a>
+                            <a href="tel:08034920325">08034920325</a>
                         </li>
                         <li className="flex items-center gap-5">
                             <div className="w-12 h-12 rounded-full p-3 border border-gray-300/50 backdrop-blur-xl">
@@ -279,14 +281,17 @@ function Contact() {
                         <h3 className="text-lg font-semibold">Our Socials</h3>
                         <div className="flex flex-wrap gap-5 underline text-base text-slate-200 max-w-xs">
                             <a href="">Twitter</a>
-                            <a href="https://www.facebook.com/profile.php?id=100078439475947&mibextid=ZbWKwL">
+                            <a href="https://www.facebook.com/profile.php?id=100078439475947">
                                 Facebook
                             </a>
-                            <a href="https://www.instagram.com/daatfoods?igsh=MTJqcHI3MnJvdHZycg==">
+                            <a href="https://www.instagram.com/daatfoods">
                                 Instagram
                             </a>
                             <a href="https://wa.me/message/HHNC5ARAPKF7E1">
                                 Whatsapp
+                            </a>
+                            <a href="https://www.tiktok.com/@daatfoods?_t=ZS-9071UQn7Hg0&_r=1">
+                                Tiktok
                             </a>
                             <a href="">Linkedin</a>
                         </div>
